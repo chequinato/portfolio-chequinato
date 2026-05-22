@@ -15,7 +15,7 @@ const AboutSection = () => {
     ,
     {
       icon: Brain,
-      title: "APIs & Automações",
+      title: "APIs e Automações",
       description: "Desenvolvimento de automações e integrações entre sistemas, utilizando APIs e recursos de IA em projetos práticos.",
       delay: "delay-200"
     }
