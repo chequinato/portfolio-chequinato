@@ -42,6 +42,7 @@ const map: Record<string, Glyph> = {
   Java: siOpenjdk,
   "GitHub Actions": siGithubactions,
   Git: siGit,
+  DevOps: siGithubactions,
   pandas: siPandas,
   Plotly: siPlotly,
   Jupyter: siJupyter,
@@ -82,6 +83,10 @@ const monogram: Record<string, string> = {
   SignalR: "SR",
   SNS: "SNS",
   xUnit: "xU",
+  "Event-driven": "EDA",
+  "Clean Architecture": "CA",
+  "CI/CD": "CI",
+  DynamoDB: "DDB",
 };
 
 export function hasIcon(name: string) {

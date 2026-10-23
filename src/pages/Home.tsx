@@ -6,11 +6,12 @@ import { Archive } from "@/components/Archive";
 import { StackMatrix } from "@/components/StackMatrix";
 import { GithubBand } from "@/components/GithubBand";
 import { Timeline } from "@/components/Timeline";
+import { Publications } from "@/components/Publications";
 import { Credentials } from "@/components/Credentials";
 import { NotesPreview } from "@/components/NotesPreview";
 import { Contact } from "@/components/Contact";
 
-// Ritmo da folha: papel · faixa · papel · faixa · papel · faixa.
+// Ordem dos jobs da run (ver data/sections.ts): cada seção é um job.
 export default function Home() {
   return (
     <>
@@ -21,6 +22,7 @@ export default function Home() {
       <Archive />
       <StackMatrix />
       <GithubBand />
+      <Publications />
       <Timeline />
       <Credentials />
       <NotesPreview />

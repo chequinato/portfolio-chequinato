@@ -9,6 +9,8 @@ export const profile = {
   since: 2021,
   role: "Estagiário em Engenharia de Software",
   company: "Itaú Unibanco",
+  companySince: "2026-05",
+  followers: 1100,
   course: "Engenharia de Software",
   school: "UniAnchieta",
   semester: "2º semestre",
@@ -51,6 +53,35 @@ export const nowStack = [
   {
     area: "Dados",
     title: "SQL",
-    items: ["modelagem relacional", "JOINs", "CTEs", "índices", "T-SQL", "PostgreSQL"],
+    items: ["modelagem relacional", "DynamoDB", "JOINs", "CTEs", "índices", "PostgreSQL"],
+  },
+];
+
+// Como eu construo: as práticas que atravessam os projetos, cada uma com
+// onde ela aparece de verdade.
+export const practices = [
+  {
+    code: "EDA",
+    title: "Arquitetura orientada a eventos",
+    body: "Sistemas que reagem a eventos em vez de esperar chamadas: webhooks, filas, tópicos e gatilhos agendados.",
+    evidence: ["EventBridge → Lambda no FX", "SQS + SNS + worker no Vero", "webhooks com HMAC"],
+  },
+  {
+    code: "CA",
+    title: "Clean Architecture",
+    body: "Domínio no centro, sem depender de framework nem de banco. As camadas de fora implementam interfaces.",
+    evidence: ["Vero em seis projetos .NET", "SOLID com Python", "camadas no Backoffice"],
+  },
+  {
+    code: "OPS",
+    title: "DevOps",
+    body: "Infraestrutura versionada, build reproduzível e pipeline que testa antes de subir.",
+    evidence: ["Terraform plan → apply", "Docker Compose", "GitHub Actions"],
+  },
+  {
+    code: "GIT",
+    title: "Git",
+    body: "Branches por feature, pull requests e histórico que conta a história do projeto.",
+    evidence: ["PRs no energy-processor", "merge de módulos no FX", "34 repositórios públicos"],
   },
 ];

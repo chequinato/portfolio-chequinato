@@ -1,3 +1,4 @@
+import { StepHead } from "./StepHead";
 import { useMemo, useState } from "react";
 import { useGithub, eventLabel, calendarStats } from "@/lib/github";
 import { relTime, useReveal } from "@/lib/hooks";
@@ -34,15 +35,7 @@ export function GithubBand() {
   return (
     <section id="github" ref={ref} className={`band gh ${cls}`}>
       <div className="band__inner">
-        <div className="sec-head sec-head--zone">
-          <span className="idx">05</span>
-          <span className="mono-label">GitHub · ao vivo</span>
-          <span className="sec-head__rule rv-rule" />
-          <span className="mono-label gh__sync">
-            <span className={`led ${gh.live ? "" : "led--amber"}`} />
-            {gh.live ? `sincronizado ${relTime(gh.syncedAt)}` : `snapshot do build · ${relTime(gh.takenAt)}`}
-          </span>
-        </div>
+        <StepHead id="github" right={<span className="gh__sync"><span className={`led ${gh.live ? "" : "led--amber"}`} />{gh.live ? `sincronizado ${relTime(gh.syncedAt)}` : `snapshot · ${relTime(gh.takenAt)}`}</span>} zone />
 
         <div className="gh__top">
           <div className="gh__big">

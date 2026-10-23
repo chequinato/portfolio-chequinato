@@ -1,3 +1,4 @@
+import { StepHead } from "./StepHead";
 import photo from "@/assets/profile-photo.png";
 import { Halftone } from "./Halftone";
 import { Counter } from "./Counter";
@@ -6,6 +7,7 @@ import { featured, archive } from "@/data/projects";
 import { useReveal, copy } from "@/lib/hooks";
 import { useState, type ReactNode } from "react";
 import snapshot from "@/data/github-snapshot.json";
+import { RunSummary } from "./RunSummary";
 
 export function Hero() {
   const { ref, cls, inView } = useReveal<HTMLElement>(0.05);
@@ -31,7 +33,7 @@ export function Hero() {
       </span>,
     ],
     ["Formação", `${profile.course} · ${profile.school} · ${profile.semester}`],
-    ["Foco", "Cloud AWS · Terraform · Python · SQL"],
+    ["Foco", "AWS · Terraform · Python · SQL · eventos"],
     ["Base", profile.city],
     [
       "Status",
@@ -44,12 +46,8 @@ export function Hero() {
 
   return (
     <section id="inicio" ref={ref} className={`sec hero ${cls}`}>
-      <div className="sec-head">
-        <span className="idx">00</span>
-        <span className="mono-label">Portfólio · rev. 2026.10</span>
-        <span className="sec-head__rule rv-rule" />
-        <span className="mono-label hero__coords">{profile.city} · 23°11′S 46°53′W</span>
-      </div>
+      <StepHead id="inicio" right={profile.city} />
+      <RunSummary />
 
       <h1 className="hero__name" aria-label={profile.name}>
         <span className="hero__line rv-cut" style={{ ["--i" as string]: 0 }}>

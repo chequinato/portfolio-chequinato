@@ -1,61 +1,64 @@
-import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { sections } from "@/data/sections";
 import { spTime, useClock, type Mode } from "@/lib/hooks";
+import { StatusIcon, fmtDur, usePipeline } from "@/lib/pipeline";
 
-// Trilho fixo à esquerda: monograma, régua de seções com a posição atual,
-// relógio de São Paulo e o botão de inversão. No celular vira barra no topo.
+// O trilho é a barra lateral de uma execução do GitHub Actions: arquivo do
+// workflow, estado da run e a lista de jobs com ícone e duração. O fio que
+// liga os jobs vai ficando verde conforme o visitante desce a página.
 export function Rail({ mode, onToggle }: { mode: Mode; onToggle: () => void }) {
   const now = useClock();
+  const p = usePipeline();
   const { pathname } = useLocation();
   const home = pathname === "/";
-  const [active, setActive] = useState("inicio");
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    if (!home) return;
-    const els = sections.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
-    const onScroll = () => {
-      const h = document.documentElement;
-      setProgress(h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight));
-      const mid = window.innerHeight * 0.35;
-      let cur = "inicio";
-      for (const el of els) if (el.getBoundingClientRect().top <= mid) cur = el.id;
-      setActive(cur);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [home]);
-
-  const current = sections.find((s) => s.id === active)!;
+  const doneCount = sections.filter((_, i) => p.status(i) === "success").length;
+  const current = sections[p.active];
 
   return (
-    <aside className="rail" aria-label="Navegação">
-      <Link to="/" className="rail__mono" aria-label="Início">
-        <span>M</span>
-        <span>C</span>
-      </Link>
+    <aside className="rail" aria-label="Execução do portfólio">
+      <div className="rail__top">
+        <Link to="/" className="rail__mono" aria-label="Início">
+          <span>M</span>
+          <span>C</span>
+        </Link>
+        <div className="rail__run">
+          <span className="rail__file mono">portfolio.yml</span>
+          <span className={`run-pill ${p.done ? "is-ok" : "is-run"}`}>
+            <StatusIcon s={p.done ? "success" : "running"} size={12} />
+            {p.done ? "Success" : "In progress"}
+          </span>
+        </div>
+      </div>
 
-      <nav className="rail__ruler" aria-label="Seções">
-        <span className="rail__track" aria-hidden>
-          <span className="rail__fill" style={{ transform: `scaleY(${home ? progress : 0})` }} />
+      <div className="rail__meta mono">
+        <span>
+          {doneCount}/{sections.length} jobs
         </span>
-        {sections.map((s) => (
-          <Link
-            key={s.id}
-            to={`/#${s.id}`}
-            className={`rail__tick ${home && s.id === active ? "is-on" : ""}`}
-            aria-current={home && s.id === active ? "true" : undefined}
-          >
-            <span className="rail__tick-n">{s.n}</span>
-            <span className="rail__tick-label">{s.label}</span>
-          </Link>
-        ))}
-      </nav>
+        <span>{fmtDur(p.total)}</span>
+      </div>
 
-      <div className="rail__mark" aria-hidden>
-        CHEQUINATO — ENG. DE SOFTWARE — FOLHA {home ? current.n : "N"}
+      <ol className="jobs" aria-label="Jobs">
+        {sections.map((s, i) => {
+          const st = p.status(i);
+          return (
+            <li key={s.id} className={`job is-${st} ${home && i === p.active ? "is-active" : ""}`}>
+              <Link to={`/#${s.id}`} aria-current={home && i === p.active ? "step" : undefined}>
+                <StatusIcon s={st} size={14} />
+                <span className="job__name mono">{s.job}</span>
+                <span className="job__dur mono">{st === "queued" ? "" : fmtDur(p.durations[i])}</span>
+                <span className="job__tip">{s.label}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="rail__now mono" aria-hidden>
+        <StatusIcon s={p.status(p.active)} size={12} />
+        <span>{home ? current.job : "notas"}</span>
+        <span className="rail__bar">
+          <span style={{ transform: `scaleX(${doneCount / sections.length})` }} />
+        </span>
       </div>
 
       <div className="rail__foot">

@@ -1,11 +1,14 @@
+import { StepHead } from "./StepHead";
 import { useState } from "react";
 import { profile, links } from "@/data/profile";
 import { copy, useReveal } from "@/lib/hooks";
 import { TechIcon } from "@/lib/icons";
+import { StatusIcon, fmtDur, usePipeline } from "@/lib/pipeline";
 
 export function Contact() {
   const { ref, cls } = useReveal<HTMLElement>(0.15);
   const [copied, setCopied] = useState(false);
+  const p = usePipeline();
 
   const onCopy = async () => {
     if (await copy(profile.email)) {
@@ -21,18 +24,24 @@ export function Contact() {
     { k: "Telefone", v: profile.phone, href: links.phone, icon: "" },
     { k: "LinkedIn", v: "miguel-chequinato", href: links.linkedin, icon: "LinkedIn" },
     { k: "GitHub", v: "@chequinato", href: links.github, icon: "GitHub" },
-    { k: "Credly", v: "4 selos verificáveis", href: links.credly, icon: "Credly" },
+    { k: "Credly", v: "selos verificáveis", href: links.credly, icon: "Credly" },
     { k: "Currículo", v: "PDF · download", href: profile.cv, icon: "", download: true },
   ];
 
   return (
     <section id="contato" ref={ref} className={`band contact ${cls}`}>
       <div className="band__inner">
-        <div className="sec-head sec-head--zone">
-          <span className="idx">09</span>
-          <span className="mono-label">Contato</span>
-          <span className="sec-head__rule rv-rule" />
-          <span className="mono-label">{profile.city}</span>
+        <StepHead id="contato" right={profile.city} zone />
+
+        <div className={`deploy ${p.done ? "is-ok" : ""}`}>
+          <div className="deploy__env mono">
+            <StatusIcon s={p.done ? "success" : "running"} size={14} />
+            <span>production</span>
+            <span className="deploy__state">{p.done ? "Active" : "Deploying…"}</span>
+          </div>
+          <div className="deploy__url mono">
+            {p.done ? `✓ Run concluída em ${fmtDur(p.total)} · todos os jobs passaram` : "aguardando o último job…"}
+          </div>
         </div>
 
         <h2 className="contact__title rv-cut">

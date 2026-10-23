@@ -1,3 +1,4 @@
+import { StepHead } from "./StepHead";
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { archive, type Archived } from "@/data/projects";
 import { useReveal } from "@/lib/hooks";
@@ -29,12 +30,7 @@ export function Archive() {
 
   return (
     <section id="arquivo" ref={ref} className={`sec archive ${cls}`}>
-      <div className="sec-head">
-        <span className="idx">03</span>
-        <span className="mono-label">Arquivo</span>
-        <span className="sec-head__rule rv-rule" />
-        <span className="mono-label">{archive.length} projetos</span>
-      </div>
+      <StepHead id="arquivo" right={`${archive.length} projetos`} />
 
       <div className="archive__top">
         <h2 className="display display--m rv-cut">
@@ -109,7 +105,9 @@ export function Archive() {
   );
 }
 
-function Lightbox({ p, start, onClose }: { p: Archived; start: number; onClose: () => void }) {
+export type Gallery = Pick<Archived, "title" | "kind" | "summary" | "images">;
+
+export function Lightbox({ p, start, onClose }: { p: Gallery; start: number; onClose: () => void }) {
   const [i, setI] = useState(start);
   const imgs = p.images ?? [];
   const n = imgs.length;

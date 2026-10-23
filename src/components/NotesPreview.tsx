@@ -1,3 +1,4 @@
+import { StepHead } from "./StepHead";
 import { Link } from "react-router-dom";
 import { notes, fmtDate } from "@/lib/notes";
 import { useReveal } from "@/lib/hooks";
@@ -20,14 +21,7 @@ export function NotesPreview() {
   const { ref, cls } = useReveal<HTMLElement>(0.1);
   return (
     <section id="notas" ref={ref} className={`sec notes ${cls}`}>
-      <div className="sec-head">
-        <span className="idx">08</span>
-        <span className="mono-label">Notas · estudos e atualizações</span>
-        <span className="sec-head__rule rv-rule" />
-        <Link className="mono-label link-quiet" to="/notas">
-          todas ({notes.length}) →
-        </Link>
-      </div>
+      <StepHead id="notas" right={<Link className="link-quiet" to="/notas">todas ({notes.length}) →</Link>} />
       <div className="notes__top">
         <h2 className="display display--m rv-cut">
           Escrevo o que <br />

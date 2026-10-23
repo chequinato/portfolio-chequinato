@@ -2,9 +2,11 @@
 
 Portfólio pessoal: [devchequinato.vercel.app](https://devchequinato.vercel.app)
 
-Uma "folha técnica" de engenharia: papel e tinta, faixas de telemetria e um
-único sinal laranja. Cada projeto em destaque tem um **instrumento** — uma
-simulação ao vivo do que o sistema faz por dentro.
+O portfólio é uma **execução de pipeline do GitHub Actions**: cada seção é um
+job (`checkout` → `setup-itau` → `build` → … → `deploy`). Conforme o visitante
+desce, os jobs passam de na fila para rodando e concluído, com o tempo real
+gasto em cada um, até o deploy em produção (o contato). Cada projeto em
+destaque tem um **instrumento** — uma simulação ao vivo do sistema por dentro.
 
 ## Stack
 
@@ -25,7 +27,9 @@ npm run build      # tira o snapshot do GitHub e gera dist/
 |---|---|
 | Dados pessoais, contato, stack atual | `src/data/profile.ts` |
 | Projetos (destaques e arquivo) | `src/data/projects.ts` |
-| Trajetória, selos e cursos | `src/data/career.ts` |
+| Trajetória (git log), certificados | `src/data/career.ts` |
+| Publicações do LinkedIn | `src/data/linkedin.ts` + `public/linkedin/` |
+| Jobs da pipeline (ordem, nomes, comandos) | `src/data/sections.ts` |
 | Cores, tipografia, movimento | `src/styles/system.css` |
 | Composição das seções | `src/styles/app.css` |
 | Instrumentos ao vivo | `src/components/instruments/` |

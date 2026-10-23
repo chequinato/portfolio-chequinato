@@ -1,3 +1,4 @@
+import { StepHead } from "./StepHead";
 import { useMemo, useState } from "react";
 import { allProjects, featured } from "@/data/projects";
 import { useReveal } from "@/lib/hooks";
@@ -7,6 +8,7 @@ import { TechIcon } from "@/lib/icons";
 // foi usada de verdade. Linhas = tecnologias, colunas = projetos.
 
 const groups: { name: string; techs: string[] }[] = [
+  { name: "Arquitetura & práticas", techs: ["Event-driven", "Clean Architecture", "CI/CD", "Git"] },
   { name: "Cloud & infra", techs: ["AWS", "Lambda", "S3", "API Gateway", "SQS", "SNS", "CloudWatch", "Terraform", "Docker", "GitHub Actions"] },
   { name: "Linguagens", techs: ["Python", "C#", "TypeScript", "JavaScript", "Java", "Kotlin", "PHP", "T-SQL"] },
   { name: "Back-end", techs: [".NET", "FastAPI", "Node.js", "Express", "Fastify", "NestJS", "Django", "Prisma", "SQLAlchemy", "EF Core"] },
@@ -26,7 +28,7 @@ export function StackMatrix() {
   const uses = (t: string) => projects.filter((p) => p.stack.includes(t) || (t === "T-SQL" && p.stack.includes("SQL")));
   const shown = groups.map((g) => ({ ...g, techs: g.techs.filter((t) => uses(t).length > 0) }));
   const techCount = shown.reduce((a, g) => a + g.techs.length, 0);
-  const langCount = shown[1].techs.length;
+  const langCount = shown.find((g) => g.name === "Linguagens")!.techs.length;
 
   const readout = row
     ? { k: label(row), v: `${uses(row).length} projeto${uses(row).length > 1 ? "s" : ""}`, list: uses(row).map((p) => p.title) }
@@ -43,12 +45,7 @@ export function StackMatrix() {
 
   return (
     <section id="stack" ref={ref} className={`sec stack ${cls}`}>
-      <div className="sec-head">
-        <span className="idx">04</span>
-        <span className="mono-label">Stack · sem porcentagem</span>
-        <span className="sec-head__rule rv-rule" />
-        <span className="mono-label">{techCount} tecnologias · {projects.length} projetos</span>
-      </div>
+      <StepHead id="stack" right={`${techCount} tecnologias · ${projects.length} projetos`} />
 
       <div className="stack__top">
         <h2 className="display display--m rv-cut">

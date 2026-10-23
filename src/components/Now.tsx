@@ -1,4 +1,5 @@
-import { nowStack, profile } from "@/data/profile";
+import { StepHead } from "./StepHead";
+import { nowStack, practices, profile } from "@/data/profile";
 import { useReveal } from "@/lib/hooks";
 import { TechIcon } from "@/lib/icons";
 
@@ -6,12 +7,7 @@ export function Now() {
   const { ref, cls } = useReveal<HTMLElement>();
   return (
     <section id="agora" ref={ref} className={`sec now ${cls}`}>
-      <div className="sec-head">
-        <span className="idx">01</span>
-        <span className="mono-label">Agora</span>
-        <span className="sec-head__rule rv-rule" />
-        <span className="mono-label">desde 2026</span>
-      </div>
+      <StepHead id="agora" right="desde mai. 2026" />
 
       <div className="now__top">
         <div className="now__badge rv-cut">
@@ -50,6 +46,27 @@ export function Now() {
             </ul>
           </article>
         ))}
+      </div>
+
+      <div className="practices">
+        <div className="practices__head">
+          <span className="mono-label">Como eu construo</span>
+          <span className="sec-head__rule rv-rule" />
+        </div>
+        <ol className="practices__list">
+          {practices.map((p, i) => (
+            <li key={p.code} className="practice rv-cut" style={{ ["--i" as string]: 4 + i }}>
+              <span className="practice__code mono">{p.code}</span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <ul>
+                {p.evidence.map((e) => (
+                  <li key={e} className="mono">→ {e}</li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

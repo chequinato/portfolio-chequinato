@@ -7,7 +7,9 @@ import NotFound from "./pages/NotFound";
 import { Rail } from "./components/Rail";
 import { CommandPalette } from "./components/CommandPalette";
 import { Topbar } from "./components/Topbar";
+import { Boot } from "./components/Boot";
 import { useMode } from "./lib/hooks";
+import { PipelineProvider } from "./lib/pipeline";
 
 function ScrollReset() {
   const { pathname, hash } = useLocation();
@@ -25,18 +27,21 @@ export default function App() {
   const { mode, toggle } = useMode();
   return (
     <BrowserRouter>
-      <ScrollReset />
-      <Rail mode={mode} onToggle={toggle} />
-      <CommandPalette onToggleMode={toggle} />
-      <main className="sheet">
-        <Topbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/notas" element={<NotesIndex />} />
-          <Route path="/notas/:slug" element={<NotePage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
+      <PipelineProvider>
+        <ScrollReset />
+        <Boot />
+        <Rail mode={mode} onToggle={toggle} />
+        <CommandPalette onToggleMode={toggle} />
+        <main className="sheet">
+          <Topbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/notas" element={<NotesIndex />} />
+            <Route path="/notas/:slug" element={<NotePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </PipelineProvider>
     </BrowserRouter>
   );
 }

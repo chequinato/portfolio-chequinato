@@ -17,6 +17,9 @@ export type Featured = {
   stack: string[];
   domain: string[];
   instrument: Instrument;
+  // Evidências reais: prints publicados no LinkedIn durante o projeto.
+  shots?: string[];
+  post?: string;
 };
 
 export type Archived = {
@@ -32,6 +35,7 @@ export type Archived = {
 };
 
 const gh = (r: string) => `https://github.com/chequinato/${r}`;
+const shots = (id: string, n: number) => Array.from({ length: n }, (_, i) => `/linkedin/${id}_${i}.jpg`);
 
 export const featured: Featured[] = [
   {
@@ -50,9 +54,11 @@ export const featured: Featured[] = [
       "Fila SQS, alertas SNS e worker em Lambda, tudo provisionado com Terraform",
       "Webhooks assinados com HMAC, rate limiting e painel React ao vivo via SignalR",
     ],
-    stack: ["C#", ".NET", "PostgreSQL", "EF Core", "ML.NET", "SignalR", "React", "TypeScript", "AWS", "SQS", "SNS", "Lambda", "Terraform", "xUnit"],
+    stack: ["C#", ".NET", "PostgreSQL", "EF Core", "ML.NET", "SignalR", "React", "TypeScript", "AWS", "SQS", "SNS", "Lambda", "Terraform", "xUnit", "Event-driven", "Clean Architecture", "Git"],
     domain: ["Back-end", "Cloud", "Dados", "Tempo real"],
     instrument: "vero",
+    shots: shots("7502451150512857089", 1),
+    post: "7517311414584291329",
   },
   {
     id: "fx",
@@ -70,9 +76,11 @@ export const featured: Featured[] = [
       "API de consulta read-only separada do fluxo de escrita",
       "Toda a infraestrutura em Terraform, com testes em pytest",
     ],
-    stack: ["Python", "AWS", "Lambda", "S3", "API Gateway", "CloudWatch", "Terraform", "pytest"],
+    stack: ["Python", "AWS", "Lambda", "S3", "API Gateway", "CloudWatch", "Terraform", "pytest", "Event-driven", "Git"],
     domain: ["Cloud", "Serverless", "Dados"],
     instrument: "fx",
+    shots: shots("7488362700545273856", 3),
+    post: "7488362700545273856",
   },
   {
     id: "energy",
@@ -89,9 +97,11 @@ export const featured: Featured[] = [
       "Dashboard em Streamlit + Plotly",
       "Docker Compose e pipeline no GitHub Actions",
     ],
-    stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "Redis", "Streamlit", "Plotly", "Docker", "GitHub Actions", "OpenAI"],
+    stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "Redis", "Streamlit", "Plotly", "Docker", "GitHub Actions", "OpenAI", "CI/CD", "Git"],
     domain: ["Back-end", "Dados", "DevOps"],
     instrument: "energy",
+    shots: shots("7453059099082153984", 5),
+    post: "7453059099082153984",
   },
   {
     id: "internhub",
@@ -108,7 +118,7 @@ export const featured: Featured[] = [
       "Ajuste de ponto com aprovação do gestor e comprovante em PDF",
       "Crachá virtual com QR code e agenda exportável para o Google Agenda",
     ],
-    stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "React", "TypeScript"],
+    stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "React", "TypeScript", "Git"],
     domain: ["Back-end", "Full stack", "Regras de negócio"],
     instrument: "ponto",
   },
@@ -127,13 +137,25 @@ export const featured: Featured[] = [
       "API REST em camadas (routes, controllers, services)",
       "Front em React com autenticação JWT e rotas protegidas",
     ],
-    stack: ["TypeScript", "Node.js", "Express", "Prisma", "SQLite", "React", "JWT"],
+    stack: ["TypeScript", "Node.js", "Express", "Prisma", "SQLite", "React", "JWT", "Clean Architecture", "Git"],
     domain: ["Back-end", "Full stack", "Finanças"],
     instrument: "backoffice",
+    shots: shots("7445593635452170240", 6),
+    post: "7445593635452170240",
   },
 ];
 
 export const archive: Archived[] = [
+  {
+    id: "energyhub",
+    title: "EnergyHub",
+    kind: "Full stack · energia",
+    year: 2026,
+    repo: gh("energy-hub"),
+    summary: "Mercado livre de energia: clientes, contratos, consumo e simulação de economia, com infraestrutura em Terraform.",
+    stack: [".NET", "C#", "Angular", "TypeScript", "MySQL", "Terraform", "Clean Architecture"],
+    images: [...shots("7451002944419753984", 9), ...shots("7449552719247417344", 5)],
+  },
   {
     id: "webhook",
     title: "Webhook Inspector",
@@ -141,7 +163,7 @@ export const archive: Archived[] = [
     year: 2025,
     repo: gh("webhook-project"),
     summary: "Captura webhooks de serviços externos, valida os dados e gera handlers automaticamente com IA.",
-    stack: ["TypeScript", "Node.js", "Fastify", "Prisma", "PostgreSQL", "Gemini"],
+    stack: ["TypeScript", "Node.js", "Fastify", "Prisma", "PostgreSQL", "Gemini", "Event-driven"],
     images: ["/images/webhook-1.png", "/images/webhook-2.png", "/images/webhook-3.png"],
   },
   {

@@ -1,4 +1,8 @@
+import { StepHead } from "./StepHead";
+import { useState } from "react";
 import { featured, type Instrument } from "@/data/projects";
+import { postUrl } from "@/data/linkedin";
+import { Lightbox } from "./Archive";
 import { useReveal } from "@/lib/hooks";
 import { TechIcon } from "@/lib/icons";
 import { VeroFeed } from "./instruments/VeroFeed";
@@ -18,6 +22,7 @@ const instruments: Record<Instrument, () => JSX.Element> = {
 function Dossier({ p, i }: { p: (typeof featured)[number]; i: number }) {
   const { ref, cls } = useReveal<HTMLElement>(0.12);
   const Inst = instruments[p.instrument];
+  const [open, setOpen] = useState<number | null>(null);
   return (
     <article ref={ref} className={`dossier ${i % 2 ? "dossier--flip" : ""} ${cls}`} id={`p-${p.id}`}>
       <div className="dossier__text">
@@ -45,10 +50,32 @@ function Dossier({ p, i }: { p: (typeof featured)[number]; i: number }) {
             </li>
           ))}
         </ul>
-        <a className="link-arrow" href={p.repo} target="_blank" rel="noreferrer">
-          Ver repositório <span aria-hidden>↗</span>
-        </a>
+        {p.shots && p.shots.length > 0 && (
+          <div className="evidence">
+            <span className="mono-label">evidências · prints publicados</span>
+            <div className="evidence__row">
+              {p.shots.map((src, j) => (
+                <button key={src} className="evidence__shot" onClick={() => setOpen(j)} aria-label={`Abrir print ${j + 1} de ${p.title}`}>
+                  <img src={src} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="dossier__links">
+          <a className="link-arrow" href={p.repo} target="_blank" rel="noreferrer">
+            Ver repositório <span aria-hidden>↗</span>
+          </a>
+          {p.post && (
+            <a className="link-arrow link-arrow--quiet" href={postUrl(p.post)} target="_blank" rel="noreferrer">
+              Publicação <span aria-hidden>↗</span>
+            </a>
+          )}
+        </div>
       </div>
+      {open !== null && p.shots && (
+        <Lightbox p={{ title: p.title, kind: p.kicker, summary: p.summary, images: p.shots }} start={open} onClose={() => setOpen(null)} />
+      )}
       <div className="dossier__inst rv-cut" style={{ ["--i" as string]: 2 }}>
         <Inst />
       </div>
@@ -61,12 +88,7 @@ export function Projects() {
   return (
     <section id="projetos" className="sec projects">
       <div ref={ref} className={cls}>
-        <div className="sec-head">
-          <span className="idx">02</span>
-          <span className="mono-label">Projetos em destaque</span>
-          <span className="sec-head__rule rv-rule" />
-          <span className="mono-label">{featured.length} sistemas</span>
-        </div>
+        <StepHead id="projetos" right={`${featured.length} sistemas`} />
         <div className="sec-title">
           <h2 className="display rv-cut">
             Sistemas que eu construí <em>e explico.</em>
