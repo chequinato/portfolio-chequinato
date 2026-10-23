@@ -1,29 +1,42 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-import Index from "./pages/Index";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import Home from "./pages/Home";
+import NotesIndex from "./pages/NotesIndex";
+import NotePage from "./pages/NotePage";
 import NotFound from "./pages/NotFound";
-const queryClient = new QueryClient();
+import { Rail } from "./components/Rail";
+import { CommandPalette } from "./components/CommandPalette";
+import { Topbar } from "./components/Topbar";
+import { useMode } from "./lib/hooks";
 
-const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
-);
+function ScrollReset() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView());
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
+  return null;
+}
 
-export default App;
+export default function App() {
+  const { mode, toggle } = useMode();
+  return (
+    <BrowserRouter>
+      <ScrollReset />
+      <Rail mode={mode} onToggle={toggle} />
+      <CommandPalette onToggleMode={toggle} />
+      <main className="sheet">
+        <Topbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/notas" element={<NotesIndex />} />
+          <Route path="/notas/:slug" element={<NotePage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
+  );
+}

@@ -1,0 +1,246 @@
+/* ══════════════════════════════════════════════════════════════════════
+   MC — SISTEMA VISUAL
+   Folha técnica impressa · faixas de telemetria · um único sinal laranja.
+   O portfólio é lido como uma ficha de engenharia: papel, tinta, fios,
+   números grandes e instrumentos ao vivo cravados no meio da folha.
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Papel ──────────────────────────────────────────────────────── */
+  --paper:        #E8E4D9;
+  --paper-sunk:   #DFDACC;
+  --paper-deep:   #D5CFBF;
+
+  /* ── Tinta ──────────────────────────────────────────────────────── */
+  --ink:          #14120F;
+  --ink-70:       #423E37;
+  --ink-45:       #5E5A50;
+  --ink-25:       #837E73;
+
+  /* ── Fios ───────────────────────────────────────────────────────── */
+  --rule:         #C6C0B1;
+  --rule-soft:    #D6D1C3;
+  --rule-hard:    #14120F;
+
+  /* ── Sinal: o laranja do Itaú. Único acento da folha.
+        --signal preenche áreas grandes; --signal-ink é a versão que
+        aguenta texto pequeno sobre o papel com contraste.            */
+  --signal:       #EC7000;
+  --signal-ink:   #A84F00;
+  --amber:        #9A6800;
+  --verde:        #1F6146;
+  --azul:         #2A4A87;
+
+  /* ── Zona invertida (faixa de telemetria) ───────────────────────── */
+  --zone:         #14120F;
+  --zone-fg:      #E8E4D9;
+  --zone-dim:     #ADA79A;
+  --zone-deep:    #8E8878;
+  --zone-rule:    #302D27;
+  --zone-sunk:    #1D1B17;
+  --zone-signal:  #FF8A1F;
+  --zone-amber:   #DDA01A;
+  --zone-verde:   #3FB183;
+  --zone-azul:    #6F9FEA;
+
+  /* ── Tipografia ─────────────────────────────────────────────────────
+     Em Mac e iPhone a pilha resolve para a São Francisco do sistema;
+     fora do ecossistema Apple, Geist assume com métrica equivalente.  */
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+             "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono:    "SF Mono", ui-monospace, "Geist Mono", "IBM Plex Mono",
+             Menlo, Consolas, monospace;
+  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* ── Movimento ──────────────────────────────────────────────────── */
+  --e-out:  cubic-bezier(.16, .84, .24, 1);
+  --e-mech: cubic-bezier(.72, 0, .18, 1);
+  --t0: 120ms;
+  --t1: 200ms;
+  --t2: 320ms;
+  --t3: 480ms;
+  --t4: 720ms;
+
+  --rail: 64px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --maxw: 1440px;
+
+  color-scheme: light;
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Modo tinta: a folha vira negativo, a faixa vira papel ────────── */
+[data-mode="ink"] {
+  --paper:        #101010;
+  --paper-sunk:   #171716;
+  --paper-deep:   #1E1D1B;
+
+  --ink:          #EDE9DE;
+  --ink-70:       #C2BDB1;
+  --ink-45:       #9C978B;
+  --ink-25:       #726D64;
+
+  --rule:         #2C2B27;
+  --rule-soft:    #201F1C;
+  --rule-hard:    #EDE9DE;
+
+  --signal:       #FF8A1F;
+  --signal-ink:   #FF9A3D;
+  --amber:        #DDA01A;
+  --verde:        #3FB183;
+  --azul:         #6F9FEA;
+
+  --zone:         #EDE9DE;
+  --zone-fg:      #101010;
+  --zone-dim:     #46423B;
+  --zone-deep:    #5E5A51;
+  --zone-rule:    #C9C3B4;
+  --zone-sunk:    #DAD5C7;
+  --zone-signal:  #B85600;
+  --zone-amber:   #9A6800;
+  --zone-verde:   #1F6146;
+  --zone-azul:    #2A4A87;
+
+  color-scheme: dark;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+@media (max-width: 860px) { html { scroll-padding-top: 64px; } }
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  /* Papel milimetrado: quase invisível, dá textura sem virar enfeite. */
+  background-image: radial-gradient(var(--rule) .5px, transparent .6px);
+  background-size: 24px 24px;
+  overflow-x: hidden;
+}
+
+#root { min-height: 100vh; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+img, svg, canvas { display: block; max-width: 100%; }
+input { font: inherit; color: inherit; }
+
+::selection { background: var(--signal); color: #14120F; }
+
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); border: 3px solid var(--paper); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-45); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   TIPOS RECORRENTES
+   ══════════════════════════════════════════════════════════════════════ */
+
+.mono-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+}
+
+.mono { font-family: var(--mono); }
+
+.num {
+  font-family: var(--display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.035em;
+  line-height: .9;
+  color: var(--ink);
+}
+
+.serif-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.4;
+  color: var(--ink-70);
+}
+
+.idx {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  color: var(--signal-ink);
+}
+
+.mark { color: var(--signal-ink); }
+
+.led {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--verde);
+  animation: led 2.4s steps(2, jump-none) infinite;
+  flex: none;
+}
+.led--signal { background: var(--signal); }
+.led--amber  { background: var(--amber); }
+.led--off    { background: var(--ink-25); animation: none; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOVIMENTO
+   Entradas diferentes para dados diferentes: fios são traçados, blocos
+   são cortados de baixo, listas entram por varredura lateral, matrizes
+   abrem em frente de onda diagonal, números rolam como contador.
+   ══════════════════════════════════════════════════════════════════════ */
+
+@keyframes rule-draw   { from { transform: scaleX(0); }              to { transform: scaleX(1); } }
+@keyframes rule-drop   { from { transform: scaleY(0); }              to { transform: scaleY(1); } }
+@keyframes cut-up      { from { clip-path: inset(100% 0 0 0); transform: translateY(14px); }
+                         to   { clip-path: inset(0 0 -10% 0);  transform: translateY(0); } }
+@keyframes wipe-right  { from { clip-path: inset(0 100% 0 0); }      to { clip-path: inset(0 0 0 0); } }
+@keyframes lift        { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes led         { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+@keyframes stroke-draw { from { stroke-dashoffset: var(--len, 400); } to { stroke-dashoffset: 0; } }
+@keyframes grow-y      { from { transform: scaleY(0); }              to { transform: scaleY(1); } }
+@keyframes grow-x      { from { transform: scaleX(0); }              to { transform: scaleX(1); } }
+@keyframes cell-open   { from { clip-path: inset(100% 0 0 0); }      to { clip-path: inset(0 0 0 0); } }
+@keyframes stamp       { from { opacity: .3; } to { opacity: 0; } }
+@keyframes caret       { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes marquee     { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes row-in      { from { clip-path: inset(0 100% 0 0); background: var(--zone-rule); }
+                         to   { clip-path: inset(0 0 0 0);    background: transparent; } }
+
+/* Cada elemento carrega o próprio índice em --i. Antes de a seção entrar
+   na tela a animação fica pausada no quadro inicial; ao entrar, roda.
+   (A regra de pausa vem depois dos atalhos `animation:`, que a zeram.) */
+.rv       { animation: lift       var(--t3) var(--e-out) both;  animation-delay: calc(var(--i, 0) * 60ms); }
+.rv-cut    { animation: cut-up     var(--t4) var(--e-out) both;  animation-delay: calc(var(--i, 0) * 70ms); }
+.rv-wipe   { animation: wipe-right var(--t3) var(--e-mech) both; animation-delay: calc(var(--i, 0) * 50ms); }
+.rv-rule   { animation: rule-draw  var(--t4) var(--e-mech) both; animation-delay: calc(var(--i, 0) * 60ms);
+             transform-origin: left center; }
+.rv-vrule  { animation: rule-drop  var(--t4) var(--e-mech) both; animation-delay: calc(var(--i, 0) * 60ms);
+             transform-origin: top center; }
+.rv, .rv-cut, .rv-wipe, .rv-rule, .rv-vrule { animation-play-state: paused; }
+.is-in .rv, .is-in .rv-cut, .is-in .rv-wipe, .is-in .rv-rule, .is-in .rv-vrule,
+.is-in.rv, .is-in.rv-cut, .is-in.rv-wipe, .is-in.rv-rule, .is-in.rv-vrule { animation-play-state: running; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
