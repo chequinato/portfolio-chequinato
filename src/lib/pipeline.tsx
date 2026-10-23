@@ -14,6 +14,8 @@ type Pipeline = {
   done: boolean;
   durations: number[];
   total: number;
+  // Quanto do job ativo já foi percorrido (0–1): a rolagem dentro da seção.
+  progress: number;
   status: (i: number) => JobStatus;
 };
 
@@ -25,6 +27,7 @@ export function PipelineProvider({ children }: { children: ReactNode }) {
   const [active, setActive] = useState(0);
   const [reached, setReached] = useState(0);
   const [done, setDone] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [durations, setDurations] = useState<number[]>(() => sections.map(() => 0));
   const activeRef = useRef(0);
 
@@ -40,6 +43,11 @@ export function PipelineProvider({ children }: { children: ReactNode }) {
       const h = document.documentElement;
       const atBottom = h.scrollTop + window.innerHeight >= h.scrollHeight - 8;
       if (atBottom) cur = sections.length - 1;
+      const el = document.getElementById(sections[cur].id);
+      if (el) {
+        const r = el.getBoundingClientRect();
+        setProgress(atBottom ? 1 : Math.min(1, Math.max(0, (mid - r.top) / Math.max(1, r.height))));
+      }
       activeRef.current = cur;
       setActive(cur);
       setReached((r) => Math.max(r, cur));
@@ -77,7 +85,7 @@ export function PipelineProvider({ children }: { children: ReactNode }) {
   };
 
   const total = durations.reduce((a, b) => a + b, 0);
-  return <Ctx.Provider value={{ active, reached, done: done || !home, durations, total, status }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ active, reached, done: done || !home, durations, total, status, progress: home ? progress : 1 }}>{children}</Ctx.Provider>;
 }
 
 export function usePipeline() {

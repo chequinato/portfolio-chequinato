@@ -5,7 +5,10 @@
    concluído (verde). O laranja Itaú continua sendo o sinal da folha.
    ══════════════════════════════════════════════════════════════════════ */
 
-:root { --rail: 248px; }
+/* --cw: 1% da área útil (tela menos o trilho). A tipografia grande mede
+   por aqui, senão o trilho largo empurra o nome para fora da folha. */
+:root { --rail: 320px; --cw: calc((100vw - var(--rail)) / 100); }
+@media (max-width: 1439px) { :root { --rail: 288px; } }
 @media (max-width: 1199px) { :root { --rail: 64px; } }
 @media (max-width: 860px) { :root { --rail: 0px; } }
 
@@ -33,8 +36,8 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 14px 14px 16px;
+  gap: 16px;
+  padding: 18px 18px 18px;
   background: var(--paper);
   border-right: 1px solid var(--rule-hard);
   overflow: hidden;
@@ -57,16 +60,16 @@
 .rail__mono:hover span:last-child { background: var(--signal); color: #14120F; }
 
 .rail__run { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.rail__file { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.rail__file { font-size: 14px; font-weight: 700; white-space: nowrap; }
 
 .run-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  padding: 2px 8px 2px 5px;
+  padding: 3px 9px 3px 6px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: .06em;
   border: 1px solid currentColor;
 }
@@ -76,44 +79,86 @@
 .rail__meta {
   display: flex;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: .06em;
   color: var(--ink-45);
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--rule);
 }
 
 .jobs { list-style: none; position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.job { position: relative; }
-/* Fio entre os ícones: fica verde quando o job de cima terminou. */
-.job:not(:last-child)::after {
-  content: "";
+/* Os jobs dividem a altura do trilho: a esteira ocupa a lateral inteira. */
+.job { position: relative; flex: 1 1 0; min-height: 40px; max-height: 92px; display: flex; flex-direction: column; }
+.job.is-active { flex: 2.4 1 0; max-height: 170px; }
+
+/* Fio entre os ícones. Fica verde quando o job terminou; no job ativo,
+   enche em âmbar na proporção da seção já percorrida. */
+.job__wire {
   position: absolute;
-  left: 12px;
-  top: 26px;
-  bottom: -4px;
-  width: 1px;
+  left: 19px;
+  top: 34px;
+  bottom: -6px;
+  width: 2px;
   background: var(--rule);
-  transform-origin: top;
+  overflow: hidden;
 }
-.job.is-success:not(:last-child)::after { background: var(--verde); width: 2px; left: 11.5px; }
+.job:last-child .job__wire { display: none; }
+.job__wire span {
+  position: absolute;
+  inset: 0;
+  background: var(--verde);
+  transform-origin: top;
+  transition: transform var(--t2) linear;
+}
+.job.is-running .job__wire span {
+  background: repeating-linear-gradient(180deg, var(--amber) 0 6px, transparent 6px 10px);
+  animation: wire-flow .6s linear infinite;
+}
+@keyframes wire-flow { from { background-position: 0 0; } to { background-position: 0 10px; } }
+
 .job a {
   position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 14px minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 12px;
   align-items: center;
-  padding: 6px 6px 6px 6px;
-  font-size: 12px;
+  padding: 8px 10px;
   color: var(--ink-70);
+  border: 1px solid transparent;
 }
-.job a:hover { background: var(--paper-sunk); color: var(--ink); }
+.job a .sicon { background: var(--paper); border-radius: 50%; }
+.job a:hover { background: var(--paper-sunk); color: var(--ink); border-color: var(--rule); }
 .job.is-queued a { color: var(--ink-45); }
-.job.is-active a { background: var(--ink); color: var(--paper); }
+.job.is-active a { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.job.is-active a .sicon { background: var(--ink); }
 .job.is-active .sicon--run .sicon__track { stroke: var(--ink-70); }
-.job__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.job__dur { font-size: 10.5px; color: inherit; opacity: .7; font-variant-numeric: tabular-nums; }
+.job__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.job__name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job__label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
+.job__dur { font-size: 12px; color: inherit; opacity: .75; font-variant-numeric: tabular-nums; }
 .job__tip { display: none; }
+
+/* Detalhe do job ativo: comando e quanto da seção já rodou. */
+.job__detail {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0 0 30px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--amber);
+  background: var(--paper-sunk);
+  font-size: 11px;
+  animation: wipe-right var(--t3) var(--e-mech) both;
+}
+.job__cmd { color: var(--ink-70); line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.job__cmd span { color: var(--signal-ink); }
+.job__prog { display: flex; align-items: center; gap: 10px; color: var(--amber); font-variant-numeric: tabular-nums; }
+.job__bar { flex: 1; height: 3px; background: var(--rule); }
+.job__bar span { display: block; height: 100%; background: var(--amber); transform-origin: left; transition: transform var(--t1) linear; }
 
 .rail__now { display: none; }
 
@@ -140,11 +185,12 @@
 @media (max-width: 1199px) and (min-width: 861px) {
   .rail { padding: 14px 0 16px; align-items: center; }
   .rail__run, .rail__meta { display: none; }
-  .jobs { width: 100%; align-items: center; gap: 2px; }
-  .job:not(:last-child)::after { left: 50%; }
-  .job.is-success:not(:last-child)::after { left: calc(50% - .5px); }
-  .job a { grid-template-columns: 14px; padding: 6px 7px; }
-  .job__name, .job__dur { display: none; }
+  .jobs { width: 100%; align-items: center; }
+  .job { width: 100%; align-items: center; max-height: 64px; }
+  .job.is-active { flex: 1 1 0; max-height: 64px; }
+  .job__wire { left: calc(50% - 1px); top: 30px; }
+  .job a { grid-template-columns: 18px; padding: 6px; }
+  .job__text, .job__dur, .job__detail { display: none; }
   .job__tip {
     display: block;
     position: absolute;
@@ -323,7 +369,7 @@ a.runsum__v:hover { color: var(--signal-ink); }
   color: var(--paper);
 }
 .practice:hover .practice__code { background: var(--signal); color: #14120F; }
-.practice h3 { font-size: clamp(22px, 2vw, 30px); font-weight: 800; letter-spacing: -.035em; line-height: 1.05; margin: 14px 0 10px; }
+.practice h3 { font-size: clamp(22px, calc(var(--cw) * 2), 30px); font-weight: 800; letter-spacing: -.035em; line-height: 1.05; margin: 14px 0 10px; }
 .practice p { font-size: 15px; color: var(--ink-70); line-height: 1.5; margin-bottom: 12px; }
 .practice ul { list-style: none; }
 .practice li { font-size: 12px; color: var(--ink-45); padding: 5px 0; border-top: 1px dotted var(--rule); }
@@ -408,11 +454,11 @@ a.runsum__v:hover { color: var(--signal-ink); }
   border-top: 1px solid var(--rule);
 }
 .gitlog__when { display: flex; flex-direction: column; gap: 8px; }
-.gitlog__when .num { font-size: clamp(36px, 3.4vw, 54px); }
+.gitlog__when .num { font-size: clamp(36px, calc(var(--cw) * 3.4), 54px); }
 .gitlog__row.is-signal .gitlog__when .num { color: var(--signal); }
 .gitlog__row.is-branch .gitlog__when .num { color: var(--signal-ink); }
 .gitlog__place { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.gitlog__card h3 { font-size: clamp(20px, 1.9vw, 28px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-bottom: 8px; }
+.gitlog__card h3 { font-size: clamp(20px, calc(var(--cw) * 1.9), 28px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-bottom: 8px; }
 .gitlog__card p { font-size: 15.5px; line-height: 1.55; color: var(--ink-70); max-width: 60ch; }
 @media (max-width: 980px) { .timeline__intro { position: static; margin-bottom: 24px; } }
 @media (max-width: 700px) {
@@ -429,7 +475,7 @@ a.runsum__v:hover { color: var(--signal-ink); }
 .pubs__stats { flex-wrap: wrap; row-gap: 20px; }
 .pubs__stats > div { padding: 0 22px; border-left: 1px solid var(--rule-hard); display: flex; flex-direction: column; gap: 8px; }
 .pubs__stats dd { max-width: 150px; }
-.pubs__stats .num { font-size: clamp(36px, 3.6vw, 58px); }
+.pubs__stats .num { font-size: clamp(36px, calc(var(--cw) * 3.6), 58px); }
 
 .pubs__outer { position: relative; }
 .pubs__sticky { padding: 0 0 clamp(48px, 7vw, 100px); }
@@ -535,7 +581,7 @@ a.runsum__v:hover { color: var(--signal-ink); }
 .artifacts__grid {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-left: 1px solid var(--rule);
 }
 .artifact a { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
@@ -558,9 +604,9 @@ a.runsum__v:hover { color: var(--signal-ink); }
 .artifact__row { display: flex; justify-content: space-between; gap: 10px; }
 .artifact__skills { font-size: 13px; color: var(--ink-45); line-height: 1.45; }
 .artifact__verify { margin-top: auto; padding-top: 6px; color: var(--signal-ink); }
-@media (max-width: 1180px) { .artifacts__grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 980px) { .creds__top { grid-template-columns: 1fr; } .artifacts__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 520px) { .artifacts__grid { grid-template-columns: 1fr; } }
+@media (max-width: 1180px) { .artifacts__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 980px) { .creds__top { grid-template-columns: 1fr; } .artifacts__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .artifacts__grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* ══ DEPLOY ══════════════════════════════════════════════════════════ */
 

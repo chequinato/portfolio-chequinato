@@ -24,7 +24,7 @@ export function Rail({ mode, onToggle }: { mode: Mode; onToggle: () => void }) {
         <div className="rail__run">
           <span className="rail__file mono">portfolio.yml</span>
           <span className={`run-pill ${p.done ? "is-ok" : "is-run"}`}>
-            <StatusIcon s={p.done ? "success" : "running"} size={12} />
+            <StatusIcon s={p.done ? "success" : "running"} size={13} />
             {p.done ? "Success" : "In progress"}
           </span>
         </div>
@@ -42,12 +42,34 @@ export function Rail({ mode, onToggle }: { mode: Mode; onToggle: () => void }) {
           const st = p.status(i);
           return (
             <li key={s.id} className={`job is-${st} ${home && i === p.active ? "is-active" : ""}`}>
+              {/* Fio até o próximo job: enche conforme a seção é percorrida. */}
+              <span className="job__wire" aria-hidden>
+                <span
+                  style={{ transform: `scaleY(${st === "success" ? 1 : home && i === p.active ? p.progress : 0})` }}
+                />
+              </span>
               <Link to={`/#${s.id}`} aria-current={home && i === p.active ? "step" : undefined}>
-                <StatusIcon s={st} size={14} />
-                <span className="job__name mono">{s.job}</span>
-                <span className="job__dur mono">{st === "queued" ? "" : fmtDur(p.durations[i])}</span>
+                <StatusIcon s={st} size={18} />
+                <span className="job__text">
+                  <span className="job__name mono">{s.job}</span>
+                  <span className="job__label">{s.label}</span>
+                </span>
+                <span className="job__dur mono">{st === "queued" ? "—" : fmtDur(p.durations[i])}</span>
                 <span className="job__tip">{s.label}</span>
               </Link>
+              {home && i === p.active && (
+                <div className="job__detail mono" aria-hidden>
+                  <span className="job__cmd">
+                    <span>$</span> {s.log}
+                  </span>
+                  <span className="job__prog">
+                    <span className="job__bar">
+                      <span style={{ transform: `scaleX(${p.progress})` }} />
+                    </span>
+                    {Math.round(p.progress * 100)}%
+                  </span>
+                </div>
+              )}
             </li>
           );
         })}
