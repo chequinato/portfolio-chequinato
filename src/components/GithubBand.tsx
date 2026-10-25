@@ -40,7 +40,7 @@ export function GithubBand() {
         <div className="gh__top">
           <div className="gh__big">
             <Counter value={gh.total} run={inView} className="num gh__total" />
-            <span className="mono-label">contribuições em {gh.year}</span>
+            <span className="mono-label">contribuições no último ano</span>
           </div>
           <dl className="gh__stats">
             {[
@@ -63,7 +63,7 @@ export function GithubBand() {
               <span key={i}>{m}</span>
             ))}
           </div>
-          <div className="heat__grid" role="img" aria-label={`${gh.total} contribuições em ${gh.year}`}>
+          <div className="heat__grid" role="img" aria-label={`${gh.total} contribuições no último ano`}>
             {weeks.map((w, wi) => (
               <div key={wi} className="heat__week">
                 {w.map((c, di) =>

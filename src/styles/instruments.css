@@ -12,7 +12,6 @@
   font-family: var(--mono);
   font-size: 12px;
   border: 1px solid var(--zone);
-  box-shadow: 8px 8px 0 var(--signal);
 }
 .inst__head {
   display: flex;

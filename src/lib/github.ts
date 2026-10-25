@@ -21,7 +21,7 @@ export function useGithub() {
     let alive = true;
     const year = new Date().getFullYear();
     Promise.allSettled([
-      get(`https://github-contributions-api.jogruber.de/v4/${USER}?y=${year}`),
+      get(`https://github-contributions-api.jogruber.de/v4/${USER}?y=last`),
       get(`https://api.github.com/users/${USER}/events/public?per_page=30`),
       get(`https://api.github.com/users/${USER}`),
     ]).then(([cal, ev, user]) => {
@@ -31,7 +31,7 @@ export function useGithub() {
         let live = false;
         if (cal.status === "fulfilled") {
           next.year = year;
-          next.total = cal.value.total[String(year)] ?? prev.total;
+          next.total = cal.value.total.lastYear ?? prev.total;
           next.days = cal.value.contributions.map((d: { date: string; count: number; level: number }) => [d.date, d.count, d.level]);
           live = true;
         }

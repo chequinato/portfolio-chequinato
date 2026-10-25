@@ -17,7 +17,7 @@ try {
   const year = new Date().getFullYear();
   const [user, cal, events] = await Promise.all([
     get(`https://api.github.com/users/${USER}`),
-    get(`https://github-contributions-api.jogruber.de/v4/${USER}?y=${year}`),
+    get(`https://github-contributions-api.jogruber.de/v4/${USER}?y=last`),
     get(`https://api.github.com/users/${USER}/events/public?per_page=30`),
   ]);
   const snapshot = {
@@ -28,7 +28,8 @@ try {
       company: user.company, followers: user.followers, following: user.following,
       repos: user.public_repos, created: user.created_at,
     },
-    total: cal.total[String(year)] ?? 0,
+    // Últimos 12 meses, o mesmo número que o perfil do GitHub mostra.
+    total: cal.total.lastYear ?? 0,
     days: cal.contributions.map((d) => [d.date, d.count, d.level]),
     events: events.slice(0, 12).map((e) => ({
       type: e.type, repo: e.repo.name.replace(`${USER}/`, ""), at: e.created_at,
@@ -36,7 +37,7 @@ try {
     })),
   };
   await writeFile(OUT, JSON.stringify(snapshot));
-  console.log(`github-snapshot: ${snapshot.total} contribuições em ${year}`);
+  console.log(`github-snapshot: ${snapshot.total} contribuições no último ano`);
 } catch (err) {
   console.warn(`github-snapshot: mantendo o anterior (${err.message})`);
 }

@@ -90,9 +90,9 @@ export function useMode() {
   useEffect(() => {
     document.documentElement.dataset.mode = mode;
     const meta = document.querySelector('meta[name="theme-color"]');
-    meta?.setAttribute("content", mode === "ink" ? "#101010" : "#E8E4D9");
+    meta?.setAttribute("content", mode === "ink" ? "#131211" : "#F5F3EE");
     try {
-      localStorage.setItem("mc-mode", mode);
+      localStorage.setItem("mc-mode-v2", mode);
     } catch {
       /* modo privado: segue sem lembrar */
     }

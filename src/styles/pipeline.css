@@ -1,14 +1,14 @@
 /* ══════════════════════════════════════════════════════════════════════
    PIPELINE
-   A página como execução do GitHub Actions. Três estados, e só eles
-   carregam cor: na fila (tinta apagada), rodando (âmbar girando) e
-   concluído (verde). O laranja Itaú continua sendo o sinal da folha.
+   A página como execução do GitHub Actions. Estados: na fila (vazio),
+   rodando (anel laranja) e concluído (preto com check). O verde fica
+   reservado para o fim da run — "success" e o deploy.
    ══════════════════════════════════════════════════════════════════════ */
 
 /* --cw: 1% da área útil (tela menos o trilho). A tipografia grande mede
-   por aqui, senão o trilho largo empurra o nome para fora da folha. */
-:root { --rail: 320px; --cw: calc((100vw - var(--rail)) / 100); }
-@media (max-width: 1439px) { :root { --rail: 288px; } }
+   por aqui, senão o trilho empurra o nome para fora da folha. */
+:root { --rail: 300px; --cw: calc((100vw - var(--rail)) / 100); }
+@media (max-width: 1439px) { :root { --rail: 272px; } }
 @media (max-width: 1199px) { :root { --rail: 64px; } }
 @media (max-width: 860px) { :root { --rail: 0px; } }
 
@@ -16,18 +16,21 @@
 @keyframes pop  { 0% { transform: scale(.4); } 70% { transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes boot-out { to { clip-path: inset(0 0 100% 0); } }
 @keyframes slide-in { from { transform: translateX(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes ring { 0%, 100% { box-shadow: inset 0 0 0 5px var(--signal), 0 0 0 0 rgba(236, 112, 0, .35); }
+                  50% { box-shadow: inset 0 0 0 5px var(--signal), 0 0 0 6px rgba(236, 112, 0, 0); } }
 
 /* ── Ícones de estado ───────────────────────────────────────────── */
 .sicon { flex: none; display: block; }
-.sicon--ok circle { fill: var(--verde); }
+.sicon--ok circle { fill: var(--ink); }
 .sicon--ok path { stroke: var(--paper); }
 .sicon--ok { animation: pop var(--t3) var(--e-out) both; }
 .sicon--run .sicon__track { stroke: var(--rule); }
-.sicon--run .sicon__arc { stroke: var(--amber); }
+.sicon--run .sicon__arc { stroke: var(--signal); }
 .sicon--run { animation: spin .9s linear infinite; }
 .sicon--queued circle { stroke: var(--ink-25); }
+.is-ok .sicon--ok circle { fill: var(--verde); }
 
-/* ══ TRILHO DE JOBS ══════════════════════════════════════════════════ */
+/* ══ ESTEIRA (trilho de jobs) ════════════════════════════════════════ */
 
 .rail {
   position: fixed;
@@ -36,129 +39,125 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 18px 18px 18px;
+  gap: 18px;
+  padding: 22px 20px 18px;
   background: var(--paper);
-  border-right: 1px solid var(--rule-hard);
+  border-right: 1.5px solid var(--rule-hard);
   overflow: hidden;
 }
 
 .rail__top { display: flex; align-items: center; gap: 12px; }
-.rail__mono {
+.rail__mark {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 36px;
-  height: 36px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
   flex: none;
-  border: 1px solid var(--ink);
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 14px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -.06em;
+  padding-bottom: 3px;
 }
-.rail__mono span { display: grid; place-items: center; }
-.rail__mono span:first-child { background: var(--ink); color: var(--paper); }
-.rail__mono:hover span:last-child { background: var(--signal); color: #14120F; }
-
+.rail__mark:hover { background: var(--signal); color: #121110; }
 .rail__run { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.rail__file { font-size: 14px; font-weight: 700; white-space: nowrap; }
-
+.rail__file { font-size: 13px; font-weight: 600; white-space: nowrap; }
 .run-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  padding: 3px 9px 3px 6px;
+  padding: 2px 8px 2px 6px;
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: .06em;
-  border: 1px solid currentColor;
+  border: 1.5px solid currentColor;
 }
-.run-pill.is-run { color: var(--amber); }
+.run-pill.is-run { color: var(--signal-ink); }
 .run-pill.is-ok { color: var(--verde); }
 
 .rail__meta {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  letter-spacing: .06em;
   color: var(--ink-45);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid var(--rule-hard);
 }
 
+/* A linha: trilho claro de fundo e a parte percorrida em tinta. */
 .jobs { list-style: none; position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
-/* Os jobs dividem a altura do trilho: a esteira ocupa a lateral inteira. */
-.job { position: relative; flex: 1 1 0; min-height: 40px; max-height: 92px; display: flex; flex-direction: column; }
-.job.is-active { flex: 2.4 1 0; max-height: 170px; }
-
-/* Fio entre os ícones. Fica verde quando o job terminou; no job ativo,
-   enche em âmbar na proporção da seção já percorrida. */
-.job__wire {
+.jobs::before, .jobs::after {
+  content: "";
   position: absolute;
-  left: 19px;
-  top: 34px;
-  bottom: -6px;
-  width: 2px;
-  background: var(--rule);
-  overflow: hidden;
+  left: 11px;
+  top: 12px;
+  width: 3px;
 }
-.job:last-child .job__wire { display: none; }
-.job__wire span {
-  position: absolute;
-  inset: 0;
-  background: var(--verde);
-  transform-origin: top;
-  transition: transform var(--t2) linear;
+.jobs::before { bottom: 12px; background: var(--rule); }
+.jobs::after {
+  height: calc((100% - 24px) * var(--reach, 0));
+  background: var(--ink);
+  transition: height var(--t2) linear;
 }
-.job.is-running .job__wire span {
-  background: repeating-linear-gradient(180deg, var(--amber) 0 6px, transparent 6px 10px);
-  animation: wire-flow .6s linear infinite;
-}
-@keyframes wire-flow { from { background-position: 0 0; } to { background-position: 0 10px; } }
 
+.job { position: relative; display: flex; flex: 1 1 0; min-height: 38px; max-height: 62px; }
+.job.is-active { flex: 2.4 1 0; max-height: 150px; }
 .job a {
-  position: relative;
-  z-index: 1;
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr) auto;
+  grid-template-columns: 25px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
-  padding: 8px 10px;
-  color: var(--ink-70);
-  border: 1px solid transparent;
+  width: 100%;
 }
-.job a .sicon { background: var(--paper); border-radius: 50%; }
-.job a:hover { background: var(--paper-sunk); color: var(--ink); border-color: var(--rule); }
-.job.is-queued a { color: var(--ink-45); }
-.job.is-active a { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.job.is-active a .sicon { background: var(--ink); }
-.job.is-active .sicon--run .sicon__track { stroke: var(--ink-70); }
-.job__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.job__name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.job__label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
-.job__dur { font-size: 12px; color: inherit; opacity: .75; font-variant-numeric: tabular-nums; }
-.job__tip { display: none; }
+.job.is-active a { align-items: start; }
 
-/* Detalhe do job ativo: comando e quanto da seção já rodou. */
-.job__detail {
+.job__dot {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 6px 0 0 30px;
-  padding: 10px 12px;
-  border: 1px solid var(--rule);
-  border-left: 2px solid var(--amber);
-  background: var(--paper-sunk);
-  font-size: 11px;
-  animation: wipe-right var(--t3) var(--e-mech) both;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 3px solid var(--rule);
+  background: var(--paper);
+  transition: background var(--t1), border-color var(--t1);
 }
-.job__cmd { color: var(--ink-70); line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.job__cmd span { color: var(--signal-ink); }
-.job__prog { display: flex; align-items: center; gap: 10px; color: var(--amber); font-variant-numeric: tabular-nums; }
-.job__bar { flex: 1; height: 3px; background: var(--rule); }
-.job__bar span { display: block; height: 100%; background: var(--amber); transform-origin: left; transition: transform var(--t1) linear; }
+.job.is-success .job__dot { background: var(--ink); border-color: var(--ink); }
+.job.is-success .job__dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 4.5px;
+  border: solid var(--paper);
+  border-width: 0 0 2.5px 2.5px;
+  transform: translate(-50%, -65%) rotate(-45deg);
+}
+.job.is-active .job__dot { border-color: var(--ink); background: var(--paper); margin-top: 8px; animation: ring 1.6s ease-in-out infinite; }
+
+.job__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 8px;
+}
+.job__text { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+.job__name { font-weight: 650; font-size: 17px; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job__label { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink-25); }
+.job__dur { font-size: 12px; color: var(--ink-25); font-variant-numeric: tabular-nums; }
+.job.is-queued .job__name { color: var(--ink-25); }
+.job a:hover .job__name { color: var(--signal-ink); }
+
+.job.is-active .job__body { background: var(--ink); color: var(--paper); padding: 10px 12px 12px; margin-left: -4px; }
+.job.is-active .job__name { font-size: 19px; color: var(--paper); }
+.job.is-active .job__label, .job.is-active .job__dur { color: var(--paper); opacity: .6; }
+.job__detail { grid-column: 1 / -1; display: block; margin-top: 10px; animation: wipe-right var(--t3) var(--e-mech) both; }
+.job__bar { display: block; height: 4px; background: rgba(245, 243, 238, .2); }
+.job__bar span { display: block; height: 100%; background: var(--signal); transform-origin: left; transition: transform var(--t1) linear; }
+.job__cmd { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font-size: 11px; opacity: .85; }
+.job__cmd span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job__tip { display: none; }
 
 .rail__now { display: none; }
 
@@ -167,30 +166,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+  border-top: 1.5px solid var(--rule-hard);
 }
-.rail__clock { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: var(--ink-45); }
+.rail__clock { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-45); }
 
 .mode-btn {
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--ink);
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ink);
   background: linear-gradient(90deg, var(--ink) 50%, var(--paper) 50%);
   transition: transform var(--t3) var(--e-mech);
 }
 .mode-btn:hover { transform: rotate(180deg); }
 
-/* Trilho compacto: só ícones; o nome aparece numa etiqueta ao passar. */
+/* Compacto: só as estações; o nome aparece numa etiqueta ao passar. */
 @media (max-width: 1199px) and (min-width: 861px) {
-  .rail { padding: 14px 0 16px; align-items: center; }
+  .rail { padding: 14px 0 16px; align-items: center; overflow: visible; }
   .rail__run, .rail__meta { display: none; }
+  .rail__mark { width: 38px; height: 38px; font-size: 19px; }
   .jobs { width: 100%; align-items: center; }
-  .job { width: 100%; align-items: center; max-height: 64px; }
-  .job.is-active { flex: 1 1 0; max-height: 64px; }
-  .job__wire { left: calc(50% - 1px); top: 30px; }
-  .job a { grid-template-columns: 18px; padding: 6px; }
-  .job__text, .job__dur, .job__detail { display: none; }
+  .jobs::before, .jobs::after { left: calc(50% - 1.5px); }
+  .job, .job.is-active { width: 100%; justify-content: center; flex: 1 1 0; max-height: 62px; }
+  .job a { grid-template-columns: 25px; width: auto; position: relative; }
+  .job.is-active .job__dot { margin-top: 0; }
+  .job__body { display: none; }
   .job__tip {
     display: block;
     position: absolute;
@@ -198,11 +198,9 @@
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
-    padding: 4px 8px;
+    padding: 4px 9px;
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
+    font-size: 12px;
     background: var(--ink);
     color: var(--paper);
     clip-path: inset(0 100% 0 0);
@@ -210,9 +208,8 @@
     pointer-events: none;
   }
   .job a:hover .job__tip { clip-path: inset(0 0 0 0); }
-  .rail { overflow: visible; }
   .rail__foot { flex-direction: column; border-top: 0; }
-  .rail__clock { flex-direction: column; }
+  .rail__clock { flex-direction: column; font-size: 11px; }
 }
 
 /* Celular: barra no topo com o job atual e o progresso da run. */
@@ -226,8 +223,9 @@
     gap: 12px;
     padding: 0 16px;
     border-right: 0;
-    border-bottom: 1px solid var(--rule-hard);
+    border-bottom: 1.5px solid var(--rule-hard);
   }
+  .rail__mark { width: 34px; height: 34px; font-size: 17px; }
   .rail__run, .rail__meta, .jobs { display: none; }
   .rail__now {
     display: grid;
@@ -236,41 +234,39 @@
     gap: 8px;
     flex: 1;
     min-width: 0;
-    font-size: 11px;
+    font-size: 12px;
   }
-  .rail__bar { height: 2px; background: var(--rule); }
-  .rail__bar span { display: block; height: 100%; background: var(--verde); transform-origin: left; transition: transform var(--t3) var(--e-mech); }
+  .rail__bar { height: 3px; background: var(--rule); }
+  .rail__bar span { display: block; height: 100%; background: var(--ink); transform-origin: left; transition: transform var(--t3) var(--e-mech); }
   .rail__foot { padding-top: 0; border-top: 0; gap: 14px; }
+  .rail__clock { display: none; }
 }
 
 /* ══ CABEÇALHO DE JOB ════════════════════════════════════════════════ */
 
-.step { margin-bottom: clamp(32px, 4.5vw, 60px); }
-.step__row { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.step__job { font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
-.step__label { white-space: nowrap; }
-.step__right { white-space: nowrap; }
-.step__dur {
-  font-size: 11px;
-  min-width: 52px;
-  text-align: right;
-  color: var(--ink-45);
-  font-variant-numeric: tabular-nums;
-}
-.step.is-running .step__dur { color: var(--amber); }
-.step.is-success .step__dur { color: var(--verde); }
+.step { margin-bottom: clamp(30px, 4vw, 54px); }
+.step__row { display: flex; align-items: center; gap: 12px; min-width: 0; font-size: 13px; }
+.step__job { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.step__label { color: var(--ink-45); white-space: nowrap; }
+.step__right { color: var(--ink-70); white-space: nowrap; }
+.step__right .mono-label, .step__right a { font-size: 13px; color: inherit; }
+.step__dur { min-width: 46px; text-align: right; color: var(--ink-25); font-variant-numeric: tabular-nums; }
+.step.is-running .step__dur { color: var(--signal-ink); }
+.step.is-success .step__dur { color: var(--ink); }
+.step .sec-head__rule { height: 1.5px; }
 .step__log {
-  margin: 10px 0 0 28px;
+  margin: 8px 0 0 29px;
   font-size: 12px;
-  color: var(--ink-45);
+  color: var(--ink-25);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.step__prompt { color: var(--signal-ink); }
-.step__caret { color: var(--amber); animation: caret 1s steps(1) infinite; margin-left: 4px; }
-.step__ok { color: var(--verde); }
+.step__prompt { color: var(--ink-45); }
+.step__caret { color: var(--signal); animation: caret 1s steps(1) infinite; margin-left: 4px; }
+.step__ok { color: var(--ink-45); }
 .step--zone .sec-head__rule { background: var(--zone-rule); }
+.step--zone .step__job { color: var(--zone-fg); }
 
 @media (max-width: 700px) {
   .step__row { flex-wrap: wrap; row-gap: 8px; }
@@ -284,11 +280,11 @@
 .runsum {
   display: grid;
   grid-template-columns: 1.5fr repeat(4, 1fr);
-  border: 1px solid var(--rule-hard);
-  margin: -12px 0 clamp(28px, 4vw, 48px);
+  border: 1.5px solid var(--rule-hard);
+  margin: clamp(36px, 4vw, 56px) 0 clamp(36px, 4vw, 56px);
   background: var(--paper);
 }
-.runsum > div { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-left: 1px solid var(--rule); min-width: 0; }
+.runsum > div { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border-left: 1.5px solid var(--rule); min-width: 0; }
 .runsum > div:first-child { border-left: 0; }
 .runsum__v { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .runsum__v b { font-weight: 700; color: var(--signal-ink); }
@@ -456,7 +452,6 @@ a.runsum__v:hover { color: var(--signal-ink); }
 .gitlog__when { display: flex; flex-direction: column; gap: 8px; }
 .gitlog__when .num { font-size: clamp(36px, calc(var(--cw) * 3.4), 54px); }
 .gitlog__row.is-signal .gitlog__when .num { color: var(--signal); }
-.gitlog__row.is-branch .gitlog__when .num { color: var(--signal-ink); }
 .gitlog__place { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .gitlog__card h3 { font-size: clamp(20px, calc(var(--cw) * 1.9), 28px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-bottom: 8px; }
 .gitlog__card p { font-size: 15.5px; line-height: 1.55; color: var(--ink-70); max-width: 60ch; }
@@ -518,7 +513,7 @@ a.runsum__v:hover { color: var(--signal-ink); }
   transition: transform var(--t2) var(--e-mech);
 }
 .post:hover { transform: translateY(-6px); }
-.post.is-top { border-color: var(--signal); box-shadow: 6px 6px 0 var(--signal); }
+.post.is-top { border-width: 3px; }
 .post__link { display: flex; flex-direction: column; height: 100%; }
 .post__media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--paper-sunk); border-bottom: 1px solid var(--rule-hard); }
 .post__media img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform var(--t4) var(--e-out); }
@@ -538,7 +533,7 @@ a.runsum__v:hover { color: var(--signal-ink); }
   color: var(--paper);
 }
 .post__count { right: 8px; }
-.post__flag { left: 8px; background: var(--signal); color: #14120F; text-transform: uppercase; }
+.post__flag { left: 8px; background: var(--paper); color: var(--ink); }
 .post__body { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px 16px; flex: 1; }
 .post__meta, .post__foot { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--ink-45); }
 .post__foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--rule); color: var(--ink-70); }

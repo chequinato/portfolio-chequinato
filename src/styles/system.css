@@ -1,56 +1,54 @@
 /* ══════════════════════════════════════════════════════════════════════
-   MC — SISTEMA VISUAL
-   Folha técnica impressa · faixas de telemetria · um único sinal laranja.
-   O portfólio é lido como uma ficha de engenharia: papel, tinta, fios,
-   números grandes e instrumentos ao vivo cravados no meio da folha.
+   MC — IDENTIDADE
+   Cartaz claro: nome gigante em tinta, grotesca pesada, itálico serifado
+   para a voz, mono para o técnico. O laranja do Itaú é acento — nunca
+   fundo de bloco. Faixas escuras marcam o ritmo da página.
    ══════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Papel ──────────────────────────────────────────────────────── */
-  --paper:        #E8E4D9;
-  --paper-sunk:   #DFDACC;
-  --paper-deep:   #D5CFBF;
+  /* ── Papel: branco quente, limpo ───────────────────────────────── */
+  --paper:        #F5F3EE;
+  --paper-sunk:   #ECE9E2;
+  --paper-deep:   #E2DED5;
 
   /* ── Tinta ──────────────────────────────────────────────────────── */
-  --ink:          #14120F;
-  --ink-70:       #423E37;
-  --ink-45:       #5E5A50;
-  --ink-25:       #837E73;
+  --ink:          #121110;
+  --ink-70:       #3E3B36;
+  --ink-45:       #57534C;
+  --ink-25:       #8F8A80;
 
   /* ── Fios ───────────────────────────────────────────────────────── */
-  --rule:         #C6C0B1;
-  --rule-soft:    #D6D1C3;
-  --rule-hard:    #14120F;
+  --rule:         #DCD7CC;
+  --rule-soft:    #E6E2D9;
+  --rule-hard:    #121110;
 
-  /* ── Sinal: o laranja do Itaú. Único acento da folha.
-        --signal preenche áreas grandes; --signal-ink é a versão que
-        aguenta texto pequeno sobre o papel com contraste.            */
+  /* ── Sinal: o laranja do Itaú, só como acento — pontos, sublinhados,
+        o job que está rodando. --signal-ink é a versão para texto.   */
   --signal:       #EC7000;
-  --signal-ink:   #A84F00;
-  --amber:        #9A6800;
-  --verde:        #1F6146;
+  --signal-ink:   #B84F00;
+  --amber:        #B84F00;
+  --verde:        #1F8A4C;
   --azul:         #2A4A87;
 
-  /* ── Zona invertida (faixa de telemetria) ───────────────────────── */
-  --zone:         #14120F;
-  --zone-fg:      #E8E4D9;
-  --zone-dim:     #ADA79A;
-  --zone-deep:    #8E8878;
-  --zone-rule:    #302D27;
-  --zone-sunk:    #1D1B17;
+  /* ── Zona escura (faixas, painéis dos instrumentos, contato) ───── */
+  --zone:         #121110;
+  --zone-fg:      #F5F3EE;
+  --zone-dim:     #B9B3A7;
+  --zone-deep:    #8F8A80;
+  --zone-rule:    #34312C;
+  --zone-sunk:    #1C1B19;
   --zone-signal:  #FF8A1F;
-  --zone-amber:   #DDA01A;
+  --zone-amber:   #FF9A3D;
   --zone-verde:   #3FB183;
-  --zone-azul:    #6F9FEA;
+  --zone-azul:    #8DB4F2;
 
   /* ── Tipografia ─────────────────────────────────────────────────────
-     Em Mac e iPhone a pilha resolve para a São Francisco do sistema;
-     fora do ecossistema Apple, Geist assume com métrica equivalente.  */
-  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-             "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --mono:    "SF Mono", ui-monospace, "Geist Mono", "IBM Plex Mono",
-             Menlo, Consolas, monospace;
-  --serif:   "Newsreader", Georgia, "Times New Roman", serif;
+     Bricolage Grotesque faz tudo, do corpo ao nome gigante (o eixo
+     óptico ajusta o desenho ao tamanho sozinho). Instrument Serif em
+     itálico só para acentos de voz; IBM Plex Mono para o que é técnico. */
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --serif:   "Instrument Serif", Georgia, "Times New Roman", serif;
 
   /* ── Movimento ──────────────────────────────────────────────────── */
   --e-out:  cubic-bezier(.16, .84, .24, 1);
@@ -62,11 +60,12 @@
   --t4: 720ms;
 
   --rail: 64px;
-  --gutter: clamp(16px, 4vw, 48px);
-  --maxw: 1440px;
+  --gutter: clamp(16px, 3.2vw, 44px);
+  --maxw: 1480px;
 
   color-scheme: light;
   font-family: var(--display);
+  font-optical-sizing: auto;
   font-size: 16px;
   line-height: 1.5;
   color: var(--ink);
@@ -77,36 +76,36 @@
   text-rendering: optimizeLegibility;
 }
 
-/* ── Modo tinta: a folha vira negativo, a faixa vira papel ────────── */
+/* ── Modo escuro: a folha vira grafite quente ─────────────────────── */
 [data-mode="ink"] {
-  --paper:        #101010;
-  --paper-sunk:   #171716;
-  --paper-deep:   #1E1D1B;
+  --paper:        #131211;
+  --paper-sunk:   #1B1A18;
+  --paper-deep:   #23211E;
 
-  --ink:          #EDE9DE;
-  --ink-70:       #C2BDB1;
-  --ink-45:       #9C978B;
-  --ink-25:       #726D64;
+  --ink:          #F2EFE8;
+  --ink-70:       #CFCAC0;
+  --ink-45:       #A9A398;
+  --ink-25:       #78736A;
 
-  --rule:         #2C2B27;
-  --rule-soft:    #201F1C;
-  --rule-hard:    #EDE9DE;
+  --rule:         #2F2D29;
+  --rule-soft:    #252321;
+  --rule-hard:    #F2EFE8;
 
   --signal:       #FF8A1F;
   --signal-ink:   #FF9A3D;
-  --amber:        #DDA01A;
+  --amber:        #FF9A3D;
   --verde:        #3FB183;
-  --azul:         #6F9FEA;
+  --azul:         #8DB4F2;
 
-  --zone:         #EDE9DE;
-  --zone-fg:      #101010;
-  --zone-dim:     #46423B;
-  --zone-deep:    #5E5A51;
-  --zone-rule:    #C9C3B4;
-  --zone-sunk:    #DAD5C7;
-  --zone-signal:  #B85600;
-  --zone-amber:   #9A6800;
-  --zone-verde:   #1F6146;
+  --zone:         #F2EFE8;
+  --zone-fg:      #131211;
+  --zone-dim:     #4A4640;
+  --zone-deep:    #6A655D;
+  --zone-rule:    #D6D1C6;
+  --zone-sunk:    #E6E2D9;
+  --zone-signal:  #B84F00;
+  --zone-amber:   #B84F00;
+  --zone-verde:   #1F8A4C;
   --zone-azul:    #2A4A87;
 
   color-scheme: dark;
@@ -148,10 +147,9 @@ input { font: inherit; color: inherit; }
 
 .mono-label {
   font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--ink-45);
 }
 
@@ -161,7 +159,7 @@ input { font: inherit; color: inherit; }
   font-family: var(--display);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.035em;
+  letter-spacing: -.055em;
   line-height: .9;
   color: var(--ink);
 }
@@ -169,18 +167,17 @@ input { font: inherit; color: inherit; }
 .serif-note {
   font-family: var(--serif);
   font-style: italic;
-  font-weight: 300;
-  font-size: clamp(19px, 1.7vw, 24px);
-  line-height: 1.4;
-  color: var(--ink-70);
+  font-weight: 400;
+  font-size: clamp(20px, 1.8vw, 25px);
+  line-height: 1.25;
+  color: var(--ink-45);
 }
 
 .idx {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .12em;
-  color: var(--signal-ink);
+  color: var(--ink);
 }
 
 .mark { color: var(--signal-ink); }

@@ -10,21 +10,18 @@ export function Now() {
       <StepHead id="agora" right="desde mai. 2026" />
 
       <div className="now__top">
-        <div className="now__badge rv-cut">
-          <img src="/itau.svg" alt="Itaú Unibanco" className="now__logo" />
-          <div>
-            <div className="now__co">{profile.company}</div>
-            <div className="mono-label">{profile.role}</div>
-          </div>
+        <div>
+          <h2 className="now__statement rv-cut" style={{ ["--i" as string]: 1 }}>
+            Hoje, <em>no</em> {profile.company}.
+          </h2>
+          <p className="serif-note now__note rv" style={{ ["--i" as string]: 2 }}>
+            {profile.role} numa squad híbrida — back-end em Python, infraestrutura em Terraform e serviços AWS. Divido
+            a semana entre o estágio e a {profile.school}.
+          </p>
         </div>
-
-        <h2 className="now__statement rv-cut" style={{ ["--i" as string]: 1 }}>
-          Entrei no Itaú com <em>1 semana</em> de faculdade.
-        </h2>
-        <p className="serif-note now__note rv" style={{ ["--i" as string]: 2 }}>
-          O primeiro semestre de Engenharia de Software mal tinha começado. Hoje divido a semana entre o estágio e a
-          UniAnchieta — e o que aprendo de um lado vira projeto do outro.
-        </p>
+        <div className="now__logo rv-cut" style={{ ["--i" as string]: 2 }}>
+          <img src="/itau.svg" alt="Itaú Unibanco" />
+        </div>
       </div>
 
       <div className="now__grid">

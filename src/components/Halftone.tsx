@@ -154,7 +154,7 @@ export function Halftone({ src, focusX = 0.55, focusY = 0.4, cell = 7 }: Props) 
         <span className="halftone__corner halftone__corner--br" />
       </div>
       <figcaption className="halftone__cap">
-        <span className="mono-label">Fig. 1 — Miguel Chequinato</span>
+        <span className="mono-label">fig. 01 · jundiaí</span>
         <button className="halftone__switch mono-label" onClick={() => setPhoto((p) => !p)} aria-pressed={photo}>
           <span className={photo ? "is-on" : ""}>Foto</span>
           <span aria-hidden>/</span>

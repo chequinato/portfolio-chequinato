@@ -6,7 +6,7 @@
     <title>Miguel Chequinato — Engenharia de Software</title>
     <meta name="description" content="Miguel Chequinato, 18 anos. Estagiário em Engenharia de Software no Itaú Unibanco. Cloud na AWS, Terraform, Python e SQL." />
     <meta name="author" content="Miguel Chequinato Pereira" />
-    <meta name="theme-color" content="#E8E4D9" />
+    <meta name="theme-color" content="#F5F3EE" />
 
     <meta property="og:title" content="Miguel Chequinato — Engenharia de Software" />
     <meta property="og:description" content="Estagiário em Engenharia de Software no Itaú. AWS, Terraform, Python, SQL. Projetos, estudos e notas." />
@@ -14,16 +14,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..900&family=Geist+Mono:wght@400..700&family=Newsreader:ital,opsz,wght@1,6..72,300..500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <!-- Aplica o modo antes do primeiro paint, para não piscar papel em quem prefere tinta. -->
+    <!-- O site abre claro; o modo escuro só vem se o visitante escolheu. -->
     <script>
       try {
-        var m = localStorage.getItem("mc-mode");
-        if (!m) m = matchMedia("(prefers-color-scheme: dark)").matches ? "ink" : "paper";
-        document.documentElement.dataset.mode = m;
+        document.documentElement.dataset.mode = localStorage.getItem("mc-mode-v2") || "paper";
       } catch (e) {}
     </script>
   </head>
