@@ -1023,7 +1023,6 @@ tr.is-on .matrix__tech svg, .matrix__tech.is-hit svg { color: var(--brand, var(-
   .now__grid { grid-template-columns: repeat(2, 1fr); }
   .now__col:nth-child(3) { border-left: 0; padding-left: 0; }
   .now__col { border-top: 1px solid var(--rule); }
-  .badges { grid-template-columns: repeat(2, 1fr); }
   .index__head, .index__row { grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1.2fr) 52px 180px; }
   .index__kind { display: none; }
   .index__head span:nth-child(3) { display: none; }
@@ -1034,8 +1033,8 @@ tr.is-on .matrix__tech svg, .matrix__tech.is-hit svg { color: var(--brand, var(-
   .dossier__inst { position: static; }
   .sec-title, .notes__top, .timeline__grid, .gh__top, .gh__bottom { grid-template-columns: 1fr; }
   .timeline__title { position: static; }
-  .now__top { grid-template-columns: 1fr; grid-template-areas: "badge" "statement" "note"; }
-  .now__badge { justify-self: start; }
+  .now__top { grid-template-columns: 1fr; gap: 24px; }
+  .now__logo { width: 120px; order: -1; padding: 12px; }
   .contact__grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -1050,11 +1049,9 @@ tr.is-on .matrix__tech svg, .matrix__tech.is-hit svg { color: var(--brand, var(-
   .hero__grid { grid-template-columns: 1fr; }
   .hero__fig { max-width: 420px; }
   .hero__nums { grid-template-columns: repeat(2, 1fr); }
-  .hero__line--2 { padding-left: 0; }
-  .hero__coords { display: none; }
   .ticker { grid-template-columns: minmax(0, 1fr); height: auto; }
   .topbar { gap: 12px; }
-  .topbar__id span, .topbar__console kbd { display: none; }
+  .topbar__id span { display: none; }
   .topbar__id { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .sec-head { flex-wrap: wrap; row-gap: 10px; }
   .sec-head .mono-label:last-child { white-space: normal; }
