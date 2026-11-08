@@ -59,6 +59,7 @@ export function Spotlight() {
       { id: "a-li", group: "Ações", label: "Abrir LinkedIn", hint: "miguel-chequinato", icon: "LinkedIn", run: () => window.open(links.linkedin, "_blank") },
       { id: "a-wa", group: "Ações", label: "Chamar no WhatsApp", hint: profile.phone, icon: "WhatsApp", run: () => window.open(links.whatsapp, "_blank") },
       { id: "a-cv", group: "Ações", label: "Baixar currículo", hint: "PDF", icon: "↓", run: () => window.open(profile.cv, "_blank") },
+      { id: "a-cv-en", group: "Ações", label: "Baixar currículo em inglês", hint: "PDF · EN", icon: "↓", run: () => window.open(profile.cvEn, "_blank") },
       { id: "a-notas", group: "Ações", label: "Ler as notas", hint: "/notas", icon: "✎", run: () => nav("/notas") },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
