@@ -15,6 +15,14 @@ Visual clean com cara de ferramenta de dev:
 - **Stack** num Dock do macOS com todas as tecnologias, ampliando no hover
 - **Experiência** como uma execução do GitHub Actions (`carreira.yml`), com jobs, grafo e log
 - Fontes da Apple (SF Pro / SF Mono) no Mac e iPhone, com Inter e JetBrains Mono como plano B
+- Motion: abertura da run, cursor customizado, nomes de job em scramble, faixa de tipografia
+  cinética, animações guiadas pelo scroll em CSS (`animation-timeline`), borda em gradiente
+  girando, grão de filme e confete quando o deploy é aprovado
+
+## CI de verdade
+
+`.github/workflows/portfolio.yml` roda a cada push: `install-deps` → `typecheck` + `build`.
+O build publica o `dist` como artifact e o rodapé do site mostra o status da última execução.
 
 ## Stack
 

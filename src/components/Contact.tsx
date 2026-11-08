@@ -6,6 +6,8 @@ import { TechIcon } from "@/lib/icons";
 import { usePipeline } from "@/lib/pipeline";
 import { JobHead } from "./JobHead";
 import { StatusIcon } from "./StatusIcon";
+import { Confetti } from "./Confetti";
+import { CiStatus } from "./CiStatus";
 
 const socials = [
   { k: "LinkedIn", href: links.linkedin },
@@ -36,6 +38,7 @@ export function Contact() {
       <div className={`cta-card pop ${approved ? "is-approved" : ""}`}>
         <span className="cta-card__ring cta-card__ring--a" aria-hidden />
         <span className="cta-card__ring cta-card__ring--b" aria-hidden />
+        {approved && <Confetti />}
 
         <div className="env">
           <StatusIcon s={approved ? "success" : "running"} size={15} />
@@ -89,6 +92,7 @@ export function Footer() {
             ? "· deploy aguardando sua aprovação"
             : "· rodando…"}
       </span>
+      <CiStatus />
       <nav>
         <span>© {new Date().getFullYear()} {profile.name}</span>
         <Link to="/notas">Notas</Link>

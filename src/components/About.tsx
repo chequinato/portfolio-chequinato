@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { profile, links } from "@/data/profile";
-import { featured, archive } from "@/data/projects";
 import { badges } from "@/data/career";
 import { TechIcon } from "@/lib/icons";
-import { useReveal, useCountUp, useNow, spotlight } from "@/lib/hooks";
+import { useReveal, useCountUp, spotlight } from "@/lib/hooks";
 import { RevealTitle } from "./RevealTitle";
 import { JobHead } from "./JobHead";
 
@@ -156,11 +155,33 @@ function GithubTile() {
    ------------------------------------------------------------------------- */
 const stack = ["AWS", "Terraform", "Python", "SQL", "FastAPI", "PostgreSQL", "Docker", "TypeScript", "React", "Git"];
 
-function Counter({ to, label, run }: { to: number; label: string; run: boolean }) {
+// Quantos repositórios públicos existem hoje no GitHub — busca ao vivo,
+// com o número da última contagem como plano B.
+const REPOS_FALLBACK = 38;
+
+function useRepoCount() {
+  const [n, setN] = useState(REPOS_FALLBACK);
+  useEffect(() => {
+    let alive = true;
+    fetch(`https://api.github.com/users/${profile.github}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((u) => alive && typeof u.public_repos === "number" && setN(Math.max(u.public_repos, REPOS_FALLBACK)))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return n;
+}
+
+function Counter({ to, label, run, plus }: { to: number; label: string; run: boolean; plus?: boolean }) {
   const v = useCountUp(to, run);
   return (
     <li>
-      <strong>{v}</strong>
+      <strong>
+        {v}
+        {plus && <sup>+</sup>}
+      </strong>
       <span>{label}</span>
     </li>
   );
@@ -168,9 +189,7 @@ function Counter({ to, label, run }: { to: number; label: string; run: boolean }
 
 export function About() {
   const { ref, cls, inView } = useReveal<HTMLElement>(0.2);
-  const now = useNow(1000);
-  const time = now.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
-  const sec = now.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", second: "2-digit" }).padStart(2, "0");
+  const repos = useRepoCount();
 
   return (
     <section id="sobre" ref={ref} className={`section container ${cls}`}>
@@ -193,20 +212,9 @@ export function About() {
           </p>
         </div>
 
-        <div className="tile tile--place spot pop" style={{ ["--d" as string]: 3 }}>
-          <span className="tile__label">
-            <span className="pulse" /> {profile.city}
-          </span>
-          <p className="clock">
-            {time}
-            <span>:{sec}</span>
-          </p>
-          <p className="tile__foot">{profile.course} · {profile.school}</p>
-        </div>
-
         <div className="tile tile--nums spot pop" style={{ ["--d" as string]: 4 }}>
           <ul className="nums">
-            <Counter to={featured.length + archive.length} label="projetos públicos" run={inView} />
+            <Counter to={repos} label="projetos no GitHub" run={inView} plus />
             <Counter to={badges.length} label="certificados" run={inView} />
             <Counter to={new Date().getFullYear() - profile.since} label="anos programando" run={inView} />
           </ul>

@@ -116,7 +116,10 @@ export function Experience() {
         <div className="graph" ref={graph}>
           <svg className="graph__lines" aria-hidden>
             {paths.map((p, i) => (
-              <path key={i} d={p.d} className={colOf(p.from) < phase ? "is-done" : ""} />
+              <g key={i}>
+                <path d={p.d} className="edge" />
+                <path d={p.d} pathLength={1} className={`edge-fill ${colOf(p.from) < phase ? "is-done" : ""}`} />
+              </g>
             ))}
           </svg>
           {cols.map((c) => (

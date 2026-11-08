@@ -7,6 +7,8 @@ import NotFound from "./pages/NotFound";
 import { Nav } from "./components/Nav";
 import { Footer } from "./components/Contact";
 import { PipelineProvider } from "./lib/pipeline";
+import { Intro } from "./components/Intro";
+import { Cursor } from "./components/Cursor";
 
 function ScrollReset() {
   const { pathname, hash } = useLocation();
@@ -25,6 +27,9 @@ export default function App() {
     <BrowserRouter>
       <PipelineProvider>
       <ScrollReset />
+      <Intro />
+      <Cursor />
+      <div className="grain" aria-hidden />
       <Nav />
       <main>
         <Routes>

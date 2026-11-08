@@ -6,6 +6,7 @@ import { Dock } from "@/components/Dock";
 import { Certificates } from "@/components/Certificates";
 import { Contact } from "@/components/Contact";
 import { RunTrack } from "@/components/RunTrack";
+import { KineticBand } from "@/components/KineticBand";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <About />
       <Projects />
+      <KineticBand />
       <Dock />
       <Experience />
       <Certificates />

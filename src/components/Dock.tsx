@@ -54,6 +54,7 @@ export function Dock() {
     setHover(null);
   };
 
+  let idx = 0;
   return (
     <section id="stack" ref={ref} className={`section stack-sec ${cls}`}>
       <div className="container sec-top sec-top--center">
@@ -81,8 +82,10 @@ export function Dock() {
                         style={{ ["--brand" as string]: brandHex(t) ?? "var(--accent)" }}
                       >
                         <span className={`dock__tip ${hover === t ? "is-on" : ""}`}>{t}</span>
-                        <span className="dock__icon">
-                          <TechIcon name={t} size={26} title={false} />
+                        <span className="dock__in" style={{ ["--k" as string]: idx++ }}>
+                          <span className="dock__icon">
+                            <TechIcon name={t} size={26} title={false} />
+                          </span>
                         </span>
                       </span>
                     ))}

@@ -907,7 +907,14 @@ a.card:hover {
 }
 
 .tile--work {
+  grid-column: span 2;
   justify-content: space-between;
+}
+
+.nums sup {
+  font-size: 0.5em;
+  vertical-align: top;
+  margin-left: 2px;
 }
 
 .tile__logo {
@@ -930,29 +937,6 @@ a.card:hover {
   font-weight: 400;
   font-size: 13px;
   color: var(--muted);
-}
-
-.pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: ping 2s ease-out infinite;
-}
-
-.clock {
-  margin-top: auto;
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 44px;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.clock span {
-  font-size: 20px;
-  color: var(--accent);
 }
 
 .tile--nums {
@@ -2163,6 +2147,7 @@ a.card:hover {
   .tile--term {
     grid-row: span 1;
     min-height: 250px;
+    padding: 0;
   }
 
   .term {
@@ -2171,14 +2156,6 @@ a.card:hover {
 
   .term__body {
     padding: 18px 20px;
-  }
-
-  .clock {
-    font-size: 34px;
-  }
-
-  .clock span {
-    font-size: 16px;
   }
 
   .nums strong {
@@ -2480,17 +2457,26 @@ a.card:hover {
   pointer-events: none;
 }
 
-.graph__lines path {
+.graph__lines .edge {
   fill: none;
   stroke: #c9c6da;
   stroke-width: 2;
   stroke-dasharray: 5 5;
-  transition: stroke 0.6s;
 }
 
-.graph__lines path.is-done {
+/* A linha verde "se desenha" quando o job de origem conclui. */
+.graph__lines .edge-fill {
+  fill: none;
   stroke: #1f883d;
-  stroke-dasharray: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.9s var(--ease);
+}
+
+.graph__lines .edge-fill.is-done {
+  stroke-dashoffset: 0;
 }
 
 .graph__col {
@@ -3254,5 +3240,425 @@ a.card:hover {
     transform: none !important;
     translate: none !important;
     opacity: 1 !important;
+  }
+}
+
+
+/* =========================================================================
+   Motion design
+   ========================================================================= */
+
+/* ---- Abertura ---- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.intro.is-leaving {
+  clip-path: inset(0 0 100% 0);
+}
+
+.intro__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  transition:
+    transform 0.6s var(--ease),
+    opacity 0.4s;
+}
+
+.intro.is-leaving .intro__box {
+  transform: translateY(-40px);
+  opacity: 0;
+}
+
+.intro__mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 22px;
+  animation: intro-mark 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes intro-mark {
+  from {
+    transform: scale(0.4) rotate(-20deg);
+    opacity: 0;
+  }
+}
+
+.intro__title {
+  font-size: 14px;
+  color: var(--muted);
+  animation: fade-in 0.5s 0.2s both;
+}
+
+.intro__title code {
+  font-family: var(--mono);
+  color: var(--ink);
+}
+
+.intro__jobs {
+  display: flex;
+  gap: 6px;
+}
+
+.intro__jobs li {
+  width: 30px;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--line);
+  animation: intro-job 0.3s both;
+  animation-delay: calc(0.3s + var(--i) * 0.12s);
+}
+
+@keyframes intro-job {
+  to {
+    background: #1f883d;
+  }
+}
+
+/* Com a abertura na tela, o hero espera ela sair para entrar. */
+[data-intro="on"] .hero .fade,
+[data-intro="on"] .hero .pop {
+  transition-delay: calc(1.45s + var(--d, 0) * 90ms);
+}
+
+[data-intro="on"] .hero .line__in {
+  transition-delay: calc(1.5s + var(--d, 0) * 120ms);
+}
+
+/* ---- Cursor ---- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 250;
+  pointer-events: none;
+  display: none;
+}
+
+.has-cursor .cursor-dot,
+.has-cursor .cursor-ring {
+  display: block;
+}
+
+.has-cursor,
+.has-cursor a,
+.has-cursor button {
+  cursor: none;
+}
+
+.cursor-dot span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.2s;
+}
+
+.cursor-dot.is-hot span {
+  transform: scale(0);
+}
+
+.cursor-ring span {
+  display: block;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(108, 76, 241, 0.5);
+  transition:
+    transform 0.35s var(--ease),
+    background 0.35s,
+    border-color 0.35s;
+}
+
+.cursor-ring.is-hot span {
+  transform: scale(1.6);
+  background: rgba(108, 76, 241, 0.1);
+  border-color: rgba(108, 76, 241, 0.25);
+}
+
+.cursor-ring.is-down span {
+  transform: scale(0.8);
+}
+
+/* ---- Grão de filme ---- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---- Tipografia cinética ---- */
+/* O wrapper corta o que a faixa inclinada passaria da tela. */
+.kinetic-wrap {
+  overflow: hidden;
+  padding-block: 20px;
+}
+
+.kinetic {
+  --kx: 0px;
+  position: relative;
+  padding: 30px 0 40px;
+  transform: rotate(-3deg);
+}
+
+.kinetic__line {
+  display: flex;
+  width: max-content;
+  font-family: var(--font-head);
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  color: var(--ink);
+  transform: translateX(var(--kx));
+  will-change: transform;
+}
+
+.kinetic__line--outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  transform: translateX(calc(-1200px - var(--kx)));
+}
+
+.kinetic__line span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.kinetic__line i {
+  font-style: normal;
+  font-size: 0.35em;
+  margin-inline: 0.6em;
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+/* ---- Confete ---- */
+.confetti {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.confetti i {
+  position: absolute;
+  width: var(--w);
+  height: calc(var(--w) * 0.45);
+  border-radius: 2px;
+  background: var(--c);
+  animation: confetti 1.6s cubic-bezier(0.2, 0.7, 0.4, 1) both;
+}
+
+@keyframes confetti {
+  0% {
+    transform: translate(0, 0) rotate(0) scale(0.6);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(var(--x), var(--y)) rotate(calc(var(--r) * 0.5)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--x) * 1.25), calc(var(--y) + 380px)) rotate(var(--r)) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* ---- Status real do CI ---- */
+.ci-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.ci-status:hover {
+  color: var(--accent);
+}
+
+/* ---- Dock entrando em onda ---- */
+.dock__in {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(28px) scale(0.5);
+  transition:
+    opacity 0.5s,
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(300ms + var(--k) * 18ms);
+}
+
+.is-in .dock__in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Borda em gradiente girando ---- */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.run,
+.pcard__btn {
+  position: relative;
+}
+
+.run::before,
+.pcard__btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), transparent 0 60%, var(--accent) 75%, #3ddc84 85%, transparent 95%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: angle 4s linear infinite;
+}
+
+.pcard__btn::after {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.pcard__btn:hover::after {
+  opacity: 1;
+}
+
+@keyframes angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* ---- Animações guiadas pelo scroll (CSS puro) ---- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Carrossel em "coverflow": o card cresce ao chegar no centro. */
+    .pcard {
+      animation: coverflow linear both;
+      animation-timeline: view(inline);
+    }
+
+    @keyframes coverflow {
+      0% {
+        scale: 0.86;
+      }
+      35%,
+      65% {
+        scale: 1;
+      }
+      100% {
+        scale: 0.9;
+      }
+    }
+
+    /* Cards grandes "assentam" conforme entram na tela. */
+    .run,
+    .cta-card,
+    .dock {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+
+    @keyframes settle {
+      from {
+        scale: 0.9;
+        rotate: -1.5deg;
+      }
+      to {
+        scale: 1;
+        rotate: 0deg;
+      }
+    }
+
+    .marquee {
+      animation: tilt linear both;
+      animation-timeline: view();
+    }
+
+    @keyframes tilt {
+      from {
+        rotate: 2deg;
+        scale: 0.96;
+      }
+      50% {
+        rotate: 0deg;
+        scale: 1;
+      }
+      to {
+        rotate: -2deg;
+        scale: 0.96;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .kinetic {
+    padding: 24px 0 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain,
+  .kinetic__line {
+    animation: none;
+    transform: none;
+  }
+
+  .dock__in {
+    opacity: 1;
+    transform: none;
   }
 }
