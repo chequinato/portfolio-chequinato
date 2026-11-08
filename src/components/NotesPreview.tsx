@@ -1,41 +1,48 @@
-import { StepHead } from "./StepHead";
 import { Link } from "react-router-dom";
-import { notes, fmtDate } from "@/lib/notes";
+import { notes, fmtDate, type Note } from "@/lib/notes";
 import { useReveal } from "@/lib/hooks";
+import { SectionHead } from "./SectionHead";
 
-export function NoteRow({ n, i }: { n: (typeof notes)[number]; i: number }) {
+export function NoteCard({ n }: { n: Note }) {
   return (
-    <li className="note-row rv-wipe" style={{ ["--i" as string]: i }}>
-      <Link to={`/notas/${n.slug}`}>
-        <span className="note-row__date mono">{fmtDate(n.date)}</span>
-        <span className="note-row__kind mono-label">{n.kind}</span>
-        <span className="note-row__title">{n.title}</span>
-        <span className="note-row__sum">{n.summary}</span>
-        <span className="note-row__min mono">{n.minutes} min →</span>
-      </Link>
-    </li>
+    <Link to={`/notas/${n.slug}`} className="card note-card">
+      <div className="note-card__top">
+        <span className="pill pill--soft">{n.kind}</span>
+        <span className="note-card__date">{fmtDate(n.date, true)}</span>
+      </div>
+      <h3>{n.title}</h3>
+      <p>{n.summary}</p>
+      <span className="link">
+        ler · {n.minutes} min <span aria-hidden>→</span>
+      </span>
+    </Link>
   );
 }
 
 export function NotesPreview() {
   const { ref, cls } = useReveal<HTMLElement>(0.1);
+  if (!notes.length) return null;
+
   return (
-    <section id="notas" ref={ref} className={`sec notes ${cls}`}>
-      <StepHead id="notas" right={<Link className="link-quiet" to="/notas">todas ({notes.length}) →</Link>} />
-      <div className="notes__top">
-        <h2 className="display display--m rv-cut">
-          Escrevo o que <br />
-          <em>aprendo.</em>
-        </h2>
-        <p className="serif-note rv" style={{ ["--i" as string]: 1 }}>
-          Diário de bordo: o que estou estudando, o que deu errado e o porquê das decisões em cada projeto.
-        </p>
+    <section id="notas" ref={ref} className={`section container ${cls}`}>
+      <div className="split-head">
+        <SectionHead
+          eyebrow="notas"
+          title={
+            <>
+              Escrevo o que <span className="accent">aprendo</span>
+            </>
+          }
+        />
+        <Link to="/notas" className="link">
+          todas as notas <span aria-hidden>→</span>
+        </Link>
       </div>
-      <ol className="note-list">
-        {notes.slice(0, 4).map((n, i) => (
-          <NoteRow key={n.slug} n={n} i={i} />
+      <div className="notes-grid">
+        {notes.slice(0, 3).map((n) => (
+          <NoteCard key={n.slug} n={n} />
         ))}
-      </ol>
+      </div>
     </section>
   );
 }

@@ -1,107 +1,109 @@
-import { StepHead } from "./StepHead";
 import { useState } from "react";
-import { featured, type Instrument } from "@/data/projects";
+import { featured, archive, type Featured } from "@/data/projects";
 import { postUrl } from "@/data/linkedin";
-import { Lightbox } from "./Archive";
-import { useReveal } from "@/lib/hooks";
 import { TechIcon } from "@/lib/icons";
-import { VeroFeed } from "./instruments/VeroFeed";
-import { FxPipeline } from "./instruments/FxPipeline";
-import { EnergyBars } from "./instruments/EnergyBars";
-import { PontoClock } from "./instruments/PontoClock";
-import { Backoffice } from "./instruments/Backoffice";
+import { useReveal } from "@/lib/hooks";
+import { SectionHead } from "./SectionHead";
 
-const instruments: Record<Instrument, () => JSX.Element> = {
-  vero: VeroFeed,
-  fx: FxPipeline,
-  energy: EnergyBars,
-  ponto: PontoClock,
-  backoffice: Backoffice,
-};
+const MAX_CHIPS = 5;
 
-function Dossier({ p, i }: { p: (typeof featured)[number]; i: number }) {
-  const { ref, cls } = useReveal<HTMLElement>(0.12);
-  const Inst = instruments[p.instrument];
-  const [open, setOpen] = useState<number | null>(null);
+function Chips({ stack }: { stack: string[] }) {
+  const shown = stack.slice(0, MAX_CHIPS);
+  const rest = stack.length - shown.length;
   return (
-    <article ref={ref} className={`dossier ${i % 2 ? "dossier--flip" : ""} ${cls}`} id={`p-${p.id}`}>
-      <div className="dossier__text">
-        <div className="dossier__meta">
-          <span className="idx">{p.code}</span>
-          <span className="mono-label">{p.year}</span>
-          <span className="mono-label">{p.domain.join(" · ")}</span>
-        </div>
-        <h3 className="dossier__title rv-cut">{p.title}</h3>
-        <p className="dossier__kicker rv" style={{ ["--i" as string]: 1 }}>{p.kicker}</p>
-        <p className="dossier__summary rv" style={{ ["--i" as string]: 2 }}>{p.summary}</p>
-        <ol className="dossier__points">
-          {p.points.map((pt, j) => (
-            <li key={pt} className="rv-wipe" style={{ ["--i" as string]: 3 + j }}>
-              <span className="mono">{String(j + 1).padStart(2, "0")}</span>
-              {pt}
-            </li>
-          ))}
-        </ol>
-        <ul className="dossier__stack" aria-label="Tecnologias">
-          {p.stack.map((s, j) => (
-            <li key={s} className="chip rv" style={{ ["--i" as string]: 6 + j * 0.5 }}>
-              <TechIcon name={s} size={14} title={false} />
-              {s}
-            </li>
-          ))}
-        </ul>
-        {p.shots && p.shots.length > 0 && (
-          <div className="evidence">
-            <span className="mono-label">evidências · prints publicados</span>
-            <div className="evidence__row">
-              {p.shots.map((src, j) => (
-                <button key={src} className="evidence__shot" onClick={() => setOpen(j)} aria-label={`Abrir print ${j + 1} de ${p.title}`}>
-                  <img src={src} alt="" loading="lazy" />
-                </button>
-              ))}
-            </div>
-          </div>
+    <ul className="chips">
+      {shown.map((t) => (
+        <li key={t} className="chip">
+          {t}
+        </li>
+      ))}
+      {rest > 0 && <li className="chip chip--more">+{rest}</li>}
+    </ul>
+  );
+}
+
+function ProjectCard({ p, wide, i }: { p: Featured; wide?: boolean; i: number }) {
+  const cover = p.shots?.[0];
+  return (
+    <article className={`card project ${wide ? "project--wide" : ""} fade`} style={{ ["--d" as string]: i % 3 }}>
+      <a className="project__media" href={p.repo} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden>
+        {cover ? (
+          <img src={cover} alt="" loading="lazy" />
+        ) : (
+          <span className="project__placeholder">
+            <TechIcon name={p.stack[0]} size={44} title={false} />
+          </span>
         )}
-        <div className="dossier__links">
-          <a className="link-arrow" href={p.repo} target="_blank" rel="noreferrer">
-            Ver repositório <span aria-hidden>↗</span>
+      </a>
+      <div className="project__body">
+        <span className="project__kicker">
+          {p.kicker} · {p.year}
+        </span>
+        <h3 className="project__title">{p.title}</h3>
+        <p className="project__summary">{p.summary}</p>
+        <Chips stack={p.stack} />
+        <div className="project__links">
+          <a href={p.repo} target="_blank" rel="noreferrer" className="link">
+            ver código <span aria-hidden>↗</span>
           </a>
           {p.post && (
-            <a className="link-arrow link-arrow--quiet" href={postUrl(p.post)} target="_blank" rel="noreferrer">
-              Publicação <span aria-hidden>↗</span>
+            <a href={postUrl(p.post)} target="_blank" rel="noreferrer" className="link link--muted">
+              publicação <span aria-hidden>↗</span>
             </a>
           )}
         </div>
-      </div>
-      {open !== null && p.shots && (
-        <Lightbox p={{ title: p.title, kind: p.kicker, summary: p.summary, images: p.shots }} start={open} onClose={() => setOpen(null)} />
-      )}
-      <div className="dossier__inst rv-cut" style={{ ["--i" as string]: 2 }}>
-        <Inst />
       </div>
     </article>
   );
 }
 
 export function Projects() {
-  const { ref, cls } = useReveal<HTMLDivElement>();
+  const { ref, cls } = useReveal<HTMLElement>(0.05);
+  const [all, setAll] = useState(false);
+  const list = all ? archive : archive.slice(0, 6);
+
   return (
-    <section id="projetos" className="sec projects">
-      <div ref={ref} className={cls}>
-        <StepHead id="projetos" right={`${featured.length} sistemas`} />
-        <div className="sec-title">
-          <h2 className="display rv-cut">
-            Sistemas que eu construí <em>e explico.</em>
-          </h2>
-          <p className="serif-note rv" style={{ ["--i" as string]: 1 }}>
-            Print parado não mostra o que um back-end faz. Cada projeto aqui tem um instrumento: uma simulação ao vivo
-            do que acontece por dentro — as decisões, as filas, os números.
-          </p>
-        </div>
+    <section id="projetos" ref={ref} className={`section container ${cls}`}>
+      <SectionHead
+        center
+        eyebrow="projetos"
+        title={
+          <>
+            Coisas que eu <span className="accent">construí</span>
+          </>
+        }
+        intro="Uma seleção do que melhor mostra como eu trabalho hoje — o código de todos está aberto no GitHub."
+      />
+
+      <div className="projects">
+        {featured.map((p, i) => (
+          <ProjectCard key={p.id} p={p} wide={i === 0} i={i} />
+        ))}
       </div>
-      {featured.map((p, i) => (
-        <Dossier key={p.id} p={p} i={i} />
-      ))}
+
+      <div className="more">
+        <h3 className="more__title">Outros projetos</h3>
+        <ul className="mini-grid">
+          {list.map((p) => (
+            <li key={p.id}>
+              <a className="card mini" href={p.live ?? p.repo} target="_blank" rel="noreferrer">
+                <div className="mini__top">
+                  <span className="mini__kind">{p.kind}</span>
+                  <span className="mini__year">{p.year}</span>
+                </div>
+                <h4>{p.title}</h4>
+                <p>{p.summary}</p>
+                <span className="mini__stack">{p.stack.slice(0, 3).join(" · ")}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {archive.length > 6 && (
+          <button className="btn btn--ghost more__toggle" onClick={() => setAll((a) => !a)}>
+            {all ? "mostrar menos" : `ver todos (${archive.length})`}
+          </button>
+        )}
+      </div>
     </section>
   );
 }
