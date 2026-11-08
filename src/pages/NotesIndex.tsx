@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { notes } from "@/lib/notes";
-import { NoteCard } from "@/components/NotesPreview";
+import { NoteCard } from "@/components/NoteCard";
 import { SectionHead } from "@/components/SectionHead";
 
 export default function NotesIndex() {

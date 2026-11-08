@@ -3,7 +3,9 @@ import { profile, links } from "@/data/profile";
 import { TechIcon } from "@/lib/icons";
 import { useReveal } from "@/lib/hooks";
 
-// Abertura: quem eu sou em uma frase, dois botões e a foto no círculo.
+// Ícones que orbitam a foto — a stack aparece sem precisar de texto.
+const orbit = ["AWS", "Python", "Terraform", "PostgreSQL", "Docker", "TypeScript"];
+
 export function Hero() {
   const { ref, cls } = useReveal<HTMLElement>(0.05);
 
@@ -14,60 +16,66 @@ export function Hero() {
   ];
 
   return (
-    <section id="inicio" ref={ref} className={`hero container ${cls}`}>
-      <div className="hero__text">
-        <span className="hero__line fade" aria-hidden />
-        <p className="hero__hello fade" style={{ ["--d" as string]: 1 }}>
-          olá, eu sou
-        </p>
-        <h1 className="hero__title fade" style={{ ["--d" as string]: 2 }}>
-          {profile.name}
-          <br />
-          <span className="accent">engenheiro de software</span>
-        </h1>
-        <p className="hero__lede fade" style={{ ["--d" as string]: 3 }}>
-          Tenho {profile.age} anos e construo back-ends e infraestrutura na nuvem com AWS, Terraform, Python e SQL.
-        </p>
+    <section id="inicio" ref={ref} className={`hero ${cls}`}>
+      <span className="blob blob--a" aria-hidden />
+      <span className="blob blob--b" aria-hidden />
 
-        <div className="hero__cta fade" style={{ ["--d" as string]: 4 }}>
-          <a href="#projetos" className="btn btn--primary">
-            ver projetos
-          </a>
-          <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn btn--ghost">
-            baixar currículo
-          </a>
+      <div className="hero__inner container">
+        <div className="hero__text">
+          <span className="eyebrow fade">olá, eu sou</span>
+          <h1 className="hero__title">
+            <span className="line">
+              <span className="line__in">Miguel</span>
+            </span>
+            <span className="line">
+              <span className="line__in accent" style={{ ["--d" as string]: 1 }}>
+                Chequinato
+              </span>
+            </span>
+          </h1>
+          <p className="hero__role fade" style={{ ["--d" as string]: 3 }}>
+            Engenheiro de software · back-end &amp; cloud
+          </p>
+
+          <div className="hero__cta fade" style={{ ["--d" as string]: 4 }}>
+            <a href="#projetos" className="btn btn--primary">
+              Ver projetos
+            </a>
+            <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn btn--ghost">
+              Currículo
+            </a>
+          </div>
+
+          <ul className="socials fade" style={{ ["--d" as string]: 5 }}>
+            {socials.map((s) => (
+              <li key={s.k}>
+                <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.k} title={s.k}>
+                  <TechIcon name={s.k} size={17} title={false} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <ul className="socials fade" style={{ ["--d" as string]: 5 }}>
-          {socials.map((s) => (
-            <li key={s.k}>
-              <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.k} title={s.k}>
-                <TechIcon name={s.k} size={18} title={false} />
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="hero__visual pop" style={{ ["--d" as string]: 2 }}>
+          <div className="ring-orbit" aria-hidden>
+            {orbit.map((t, i) => (
+              <span key={t} className="orbit-item" style={{ ["--a" as string]: `${(360 / orbit.length) * i}deg` }}>
+                <span className="orbit-item__bubble">
+                  <TechIcon name={t} size={20} title={false} />
+                </span>
+              </span>
+            ))}
+          </div>
+          <div className="hero__ring">
+            <img src={photo} alt={`Foto de ${profile.name}`} className="hero__photo" />
+          </div>
+        </div>
       </div>
 
-      <div className="hero__visual fade" style={{ ["--d" as string]: 2 }}>
-        <div className="orbit orbit--outer" aria-hidden />
-        <div className="orbit orbit--inner" aria-hidden />
-        <div className="hero__ring">
-          <img src={photo} alt={`Foto de ${profile.name}`} className="hero__photo" />
-        </div>
-        <span className="float-pill float-pill--status">
-          <span className="dot" /> aberto a oportunidades
-        </span>
-        <span className="float-pill float-pill--place">
-          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
-            <path
-              d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Zm0-9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
-              fill="currentColor"
-            />
-          </svg>
-          {profile.city}
-        </span>
-      </div>
+      <a href="#sobre" className="scroll-hint" aria-label="Rolar para baixo">
+        <span />
+      </a>
     </section>
   );
 }

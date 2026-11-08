@@ -2,9 +2,10 @@
 
 Portfólio pessoal: [devchequinato.vercel.app](https://devchequinato.vercel.app)
 
-Visual clean: fundo claro, uma única cor de destaque (violeta), uma fonte
-(Plus Jakarta Sans), cards arredondados e bastante respiro. A home tem sete
-seções: início, sobre, projetos, trajetória, certificados, notas e contato.
+Visual clean e animado: fundo claro, uma única cor de destaque (violeta),
+Montserrat nos títulos e Inter no texto. A home tem só o essencial: início,
+sobre, projetos (carrossel + pop-up que passa de projeto em projeto),
+experiência, certificados (faixa infinita) e contato. As notas ficam em `/notas`.
 
 ## Stack
 
@@ -28,7 +29,8 @@ npm run build      # checa os tipos e gera dist/
 | Trajetória (git log), certificados | `src/data/career.ts` |
 | Links de publicações do LinkedIn | `src/data/linkedin.ts` + `public/linkedin/` |
 | Ordem das seções da home | `src/pages/Home.tsx` |
-| Cores, fonte, espaçamentos e layout | `src/styles/main.css` (tokens no topo) |
+| Cores, fontes, layout e animações | `src/styles/main.css` (tokens no topo) |
+| Estilo das páginas de notas | `src/styles/pages.css` |
 
 ## Publicar uma nota
 
@@ -47,4 +49,4 @@ summary: Uma frase que aparece na lista.
 Texto em Markdown...
 ```
 
-Dê push: a Vercel republica e a nota aparece na home e em `/notas`.
+Dê push: a Vercel republica e a nota aparece em `/notas`.

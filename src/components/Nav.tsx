@@ -2,40 +2,38 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const items = [
-  { id: "sobre", label: "sobre" },
-  { id: "projetos", label: "projetos" },
-  { id: "trajetoria", label: "trajetória" },
-  { id: "certificados", label: "certificados" },
+  { id: "sobre", label: "Sobre" },
+  { id: "projetos", label: "Projetos" },
+  { id: "experiencia", label: "Experiência" },
 ];
 
-// Barra fixa no topo: logo, links das seções e o botão de contato.
-// No celular os links viram um menu que abre por cima.
+// Barra fixa no topo com progresso de leitura. No celular os links viram
+// um menu que abre por cima.
 export function Nav() {
   const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<string>("");
+  const [active, setActive] = useState("");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? window.scrollY / max : 0);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
-  // Destaca o link da seção que está no meio da tela.
   useEffect(() => {
-    if (pathname !== "/") {
-      setActive(pathname.startsWith("/notas") ? "notas" : "");
-      return;
-    }
-    const els = [...items.map((i) => i.id), "inicio", "notas", "contato"]
+    if (pathname !== "/") return setActive("");
+    const els = ["inicio", ...items.map((i) => i.id), "contato"]
       .map((id) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => e.isIntersecting && setActive(e.target.id));
-      },
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
       { rootMargin: "-45% 0px -50% 0px" },
     );
     els.forEach((el) => io.observe(el));
@@ -54,7 +52,7 @@ export function Nav() {
             mc
           </span>
           <span className="logo__text">
-            chequinato<span className="logo__dot">.</span>
+            chequinato<span className="accent">.</span>
           </span>
         </Link>
 
@@ -64,16 +62,13 @@ export function Nav() {
               {i.label}
             </a>
           ))}
-          <Link to="/notas" className={active === "notas" ? "is-active" : ""} onClick={() => setOpen(false)}>
-            notas
-          </Link>
           <a href={to("contato")} className="btn btn--primary nav__cta-mobile" onClick={() => setOpen(false)}>
-            contato
+            Contato
           </a>
         </nav>
 
         <a href={to("contato")} className="btn btn--primary btn--sm nav__cta">
-          contato
+          Contato
         </a>
 
         <button className="nav__burger" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
@@ -81,6 +76,7 @@ export function Nav() {
           <span />
         </button>
       </div>
+      <span className="nav__progress" style={{ transform: `scaleX(${progress})` }} aria-hidden />
     </header>
   );
 }
