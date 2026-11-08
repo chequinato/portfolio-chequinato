@@ -1,0 +1,70 @@
+# A mesma run que o site encena, agora de verdade: a cada push o GitHub
+# Actions instala as dependências, checa os tipos e gera o build.
+# O rodapé do site lê o resultado da última execução pela API do GitHub.
+name: portfolio
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-deps:
+    name: install-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: npm ci
+        run: npm ci
+
+  typecheck:
+    name: typecheck
+    needs: install-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: tsc
+        run: npx tsc -b
+
+  build:
+    name: build
+    needs: install-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: vite build
+        run: npx vite build
+      - name: Resumo do build
+        run: |
+          {
+            echo "### Build do portfólio"
+            echo ""
+            echo "| Arquivo | Tamanho |"
+            echo "|---|---|"
+            for f in dist/assets/*.js dist/assets/*.css; do
+              echo "| \`$(basename "$f")\` | $(du -h "$f" | cut -f1) |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-dist
+          path: dist/
+          retention-days: 7

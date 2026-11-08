@@ -49,16 +49,6 @@ export function useCountUp(to: number, run: boolean, ms = 1400) {
   return v;
 }
 
-// Atualiza a cada `ms` — usado no relógio ao vivo.
-export function useNow(ms = 1000) {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), ms);
-    return () => clearInterval(t);
-  }, [ms]);
-  return now;
-}
-
 // Passa a posição do mouse para o CSS (--mx, --my) em cada filho com
 // .spot — é o "holofote" que segue o cursor nos cards.
 export function spotlight(e: ReactMouseEvent<HTMLElement>) {

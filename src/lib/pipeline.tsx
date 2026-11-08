@@ -9,9 +9,11 @@ import type { Status } from "@/components/StatusIcon";
 export const jobs = [
   { id: "inicio", job: "checkout", label: "Início" },
   { id: "sobre", job: "setup", label: "Sobre" },
+  { id: "skills", job: "load-skills", label: "Skills" },
   { id: "projetos", job: "build", label: "Projetos" },
   { id: "stack", job: "install-deps", label: "Stack" },
   { id: "experiencia", job: "carreira", label: "Experiência" },
+  { id: "linkedin", job: "publish", label: "LinkedIn" },
   { id: "certificados", job: "upload-artifacts", label: "Certificados" },
   { id: "contato", job: "deploy", label: "Contato" },
 ] as const;
