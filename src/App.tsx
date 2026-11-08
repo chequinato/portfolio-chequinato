@@ -9,6 +9,7 @@ import { Footer } from "./components/Contact";
 import { PipelineProvider } from "./lib/pipeline";
 import { Intro } from "./components/Intro";
 import { Cursor } from "./components/Cursor";
+import { Spotlight } from "./components/Spotlight";
 
 function ScrollReset() {
   const { pathname, hash } = useLocation();
@@ -29,6 +30,7 @@ export default function App() {
       <ScrollReset />
       <Intro />
       <Cursor />
+      <Spotlight />
       <div className="grain" aria-hidden />
       <Nav />
       <main>

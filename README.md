@@ -11,6 +11,9 @@ conclui quando o visitante aprova. O estado da run mora em `src/lib/pipeline.tsx
 
 Visual clean com cara de ferramenta de dev:
 
+- **Hero** com um crachá pendurado num cordão: física de pêndulo, dá para arrastar e clicar para virar
+- **⌘K** abre uma busca no estilo Spotlight do macOS (seções, projetos e ações)
+
 - **Sobre** em bento grid, com um terminal no estilo do macOS que se apresenta sozinho
 - **Skills** escritas como arquivos `SKILL.md` do Claude, num editor que digita cada arquivo
 - **Projetos** com capas animadas (mini-interfaces em CSS) e pop-up Problema → Solução → Resultado

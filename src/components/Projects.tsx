@@ -250,6 +250,13 @@ export function Projects() {
   const [open, setOpen] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
 
+  // O ⌘K pode pedir para abrir um projeto direto no pop-up.
+  useEffect(() => {
+    const onOpen = (e: Event) => setOpen((e as CustomEvent<number>).detail);
+    window.addEventListener("open-project", onOpen);
+    return () => window.removeEventListener("open-project", onOpen);
+  }, []);
+
   const onScroll = () => {
     const el = track.current;
     if (!el) return;
