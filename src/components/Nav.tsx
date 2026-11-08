@@ -5,9 +5,11 @@ import { StatusIcon } from "./StatusIcon";
 
 const items: { id: JobId; label: string }[] = [
   { id: "sobre", label: "Sobre" },
+  { id: "skills", label: "Skills" },
   { id: "projetos", label: "Projetos" },
   { id: "stack", label: "Stack" },
   { id: "experiencia", label: "Experiência" },
+  { id: "linkedin", label: "LinkedIn" },
 ];
 
 // Barra fixa no topo com progresso de leitura. No celular os links viram
