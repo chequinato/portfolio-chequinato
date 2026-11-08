@@ -14,6 +14,11 @@ export type Milestone = {
   commit: string;
   lane: 0 | 1;
   refs?: string[];
+  // Como o marco aparece no workflow do GitHub Actions da seção
+  // Experiência: nome do job, duração e coluna no grafo.
+  job: string;
+  dur: string;
+  col: 0 | 1 | 2 | 3;
 };
 
 export const timeline: Milestone[] = [
@@ -21,6 +26,9 @@ export const timeline: Milestone[] = [
     when: "2021",
     year: 2021,
     title: "Primeira linha de código",
+    job: "init",
+    dur: "5a",
+    col: 0,
     commit: "init: primeira linha de código",
     lane: 0,
     refs: ["root"],
@@ -31,6 +39,9 @@ export const timeline: Milestone[] = [
     when: "2023 — 2025",
     year: 2023,
     title: "Técnico em Logística + Ensino Médio",
+    job: "tecnico-logistica",
+    dur: "3a",
+    col: 1,
     commit: "feat(estudo): técnico em logística + ensino médio",
     lane: 0,
     place: "SENAI Jundiaí · SESI",
@@ -40,6 +51,9 @@ export const timeline: Milestone[] = [
     when: "jan. 2024 — dez. 2025",
     year: 2024,
     title: "Menor Aprendiz",
+    job: "menor-aprendiz",
+    dur: "2a",
+    col: 1,
     commit: "feat(carreira): menor aprendiz na vetnil",
     lane: 0,
     place: "Vetnil",
@@ -49,6 +63,9 @@ export const timeline: Milestone[] = [
     when: "início de 2026 · 1 mês",
     year: 2026,
     title: "Assistente de TI",
+    job: "assistente-ti",
+    dur: "1m",
+    col: 2,
     commit: "feat(carreira): assistente de ti na artfinal",
     lane: 0,
     place: "Artfinal Eventos",
@@ -59,6 +76,9 @@ export const timeline: Milestone[] = [
     when: "fev. 2026 — agora",
     year: 2026,
     title: "Engenharia de Software",
+    job: "faculdade",
+    dur: "agora",
+    col: 3,
     commit: "feat(estudo): engenharia de software na unianchieta",
     lane: 1,
     refs: ["origin/faculdade"],
@@ -70,6 +90,9 @@ export const timeline: Milestone[] = [
     when: "mai. 2026 — agora",
     year: 2026,
     title: "Estagiário em Engenharia de Software",
+    job: "estagio-itau",
+    dur: "agora",
+    col: 3,
     commit: "feat(carreira): estágio de engenharia de software no itaú",
     lane: 0,
     refs: ["HEAD → main", "tag: itau"],

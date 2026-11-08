@@ -4,6 +4,10 @@ import { featured, type Featured } from "@/data/projects";
 import { postUrl } from "@/data/linkedin";
 import { TechIcon } from "@/lib/icons";
 import { useReveal } from "@/lib/hooks";
+import { ProjectMock } from "./ProjectMock";
+import { RevealTitle } from "./RevealTitle";
+import { StatusIcon } from "./StatusIcon";
+import { JobHead } from "./JobHead";
 
 const pad = (n: number) => String(n + 1).padStart(2, "0");
 
@@ -11,18 +15,15 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
    Card do carrossel: só imagem, número, título e uma linha.
    ------------------------------------------------------------------------- */
 function Card({ p, i, onOpen }: { p: Featured; i: number; onOpen: () => void }) {
-  const cover = p.shots?.[0];
   return (
     <li className="pcard pop" style={{ ["--d" as string]: i + 1 }}>
       <button className="pcard__btn" onClick={onOpen} aria-label={`Abrir detalhes de ${p.title}`}>
         <span className="pcard__media">
-          {cover ? (
-            <img src={cover} alt="" loading="lazy" draggable={false} />
-          ) : (
-            <span className="pcard__placeholder">
-              <TechIcon name={p.stack[0]} size={48} title={false} />
-            </span>
-          )}
+          <ProjectMock kind={p.instrument} />
+          <span className={`run-pill ${p.wip ? "run-pill--run" : ""}`}>
+            <StatusIcon s={p.wip ? "running" : "success"} size={14} />
+            {p.wip ? "em andamento" : "concluído"}
+          </span>
           <span className="pcard__hover">
             <span className="pcard__plus" aria-hidden>
               +
@@ -44,47 +45,92 @@ function Card({ p, i, onOpen }: { p: Featured; i: number; onOpen: () => void }) 
    Um projeto dentro do pop-up. A chave (p.id) remonta o componente a cada
    troca, e isso dispara a animação de entrada na direção certa.
    ------------------------------------------------------------------------- */
+// Mini-pipeline do projeto: os passos rodam em sequência quando o slide
+// aparece. Projeto em andamento para no deploy, ainda rodando.
+const steps = ["checkout", "build", "test", "deploy"];
+
+function MiniRun({ wip }: { wip?: boolean }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setPhase((n) => (n >= steps.length ? n : n + 1)), 420);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <ol className="minirun" aria-label="Pipeline do projeto">
+      {steps.map((st, i) => {
+        const last = i === steps.length - 1;
+        const s = i < phase && !(wip && last) ? "success" : i <= phase ? "running" : "queued";
+        return (
+          <li key={st} className={`minirun__step minirun__step--${s}`}>
+            <span className="minirun__icon" key={s}>
+              <StatusIcon s={s} size={13} />
+            </span>
+            <code>{st}</code>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function Slide({ p, dir }: { p: Featured; dir: 1 | -1 }) {
   const shots = p.shots ?? [];
-  const [shot, setShot] = useState(0);
+  // -1 = demonstração animada; 0..n = prints reais do projeto.
+  const [view, setView] = useState(-1);
 
   return (
     <div className={`slide ${dir === 1 ? "slide--next" : "slide--prev"}`}>
-      <div className="slide__media">
-        {shots.length ? (
-          <img key={shot} src={shots[shot]} alt={`Captura de tela do ${p.title}`} className="slide__img" />
-        ) : (
-          <span className="pcard__placeholder">
-            <TechIcon name={p.stack[0]} size={64} title={false} />
-          </span>
-        )}
-        {shots.length > 1 && (
+      <div className="slide__left">
+        <div className="slide__media">
+          {view < 0 ? (
+            <ProjectMock kind={p.instrument} />
+          ) : (
+            <img key={view} src={shots[view]} alt={`Captura de tela do ${p.title}`} className="slide__img" />
+          )}
+        </div>
+        {shots.length > 0 && (
           <div className="slide__thumbs">
+            <button className={view < 0 ? "is-on" : ""} onClick={() => setView(-1)}>
+              demo
+            </button>
             {shots.map((s, i) => (
-              <button
-                key={s}
-                className={i === shot ? "is-on" : ""}
-                onClick={() => setShot(i)}
-                aria-label={`Imagem ${i + 1} de ${shots.length}`}
-              />
+              <button key={s} className={view === i ? "is-on" : ""} onClick={() => setView(i)} aria-label={`Print ${i + 1}`}>
+                <img src={s} alt="" loading="lazy" />
+              </button>
             ))}
           </div>
         )}
       </div>
 
       <div className="slide__body">
-        <span className="slide__kicker">{p.kicker}</span>
+        <span className="slide__kicker">
+          {p.kicker}
+          {p.wip && (
+            <span className="run-pill run-pill--run run-pill--inline">
+              <StatusIcon s="running" size={13} /> em andamento
+            </span>
+          )}
+        </span>
         <h3 className="slide__title">{p.title}</h3>
-        <p className="slide__summary">{p.summary}</p>
+        <MiniRun wip={p.wip} />
 
-        <ul className="slide__points">
-          {p.points.slice(0, 3).map((pt) => (
-            <li key={pt}>{pt}</li>
-          ))}
-        </ul>
+        <dl className="story">
+          <div>
+            <dt>Problema</dt>
+            <dd>{p.story.problema}</dd>
+          </div>
+          <div>
+            <dt>Solução</dt>
+            <dd>{p.story.solucao}</dd>
+          </div>
+          <div>
+            <dt>Resultado</dt>
+            <dd>{p.story.resultado}</dd>
+          </div>
+        </dl>
 
         <ul className="slide__stack">
-          {p.stack.slice(0, 8).map((t) => (
+          {p.stack.slice(0, 7).map((t) => (
             <li key={t} title={t}>
               <TechIcon name={t} size={15} title={false} />
               {t}
@@ -222,10 +268,8 @@ export function Projects() {
     <section id="projetos" ref={ref} className={`section projects ${cls}`}>
       <div className="container projects__head">
         <div>
-          <span className="eyebrow fade">projetos</span>
-          <h2 className="sec-title fade" style={{ ["--d" as string]: 1 }}>
-            O que eu <span className="accent">construí.</span>
-          </h2>
+          <JobHead id="projetos" label="projetos" />
+          <RevealTitle text="O que eu" accent="construí." />
         </div>
         <div className="projects__arrows fade" style={{ ["--d" as string]: 2 }}>
           <button onClick={() => slide(-1)} aria-label="Anterior" disabled={progress <= 0.01}>
