@@ -75,6 +75,11 @@ export function Nav() {
           </a>
         </nav>
 
+        <button className="nav__k" onClick={() => window.dispatchEvent(new Event("open-spotlight"))} aria-label="Busca rápida (⌘K)">
+          <kbd>⌘</kbd>
+          <kbd>K</kbd>
+        </button>
+
         <a href={to("contato")} className="btn btn--primary btn--sm nav__cta">
           Contato
         </a>
