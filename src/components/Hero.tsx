@@ -98,6 +98,9 @@ export function Hero() {
             <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn btn--ghost">
               Currículo
             </a>
+            <a href={profile.cvEn} download="Resume-Miguel-Chequinato.pdf" className="btn btn--ghost" lang="en" title="Resume in English">
+              Resume (EN)
+            </a>
             <ul className="socials">
               {socials.map((s) => (
                 <li key={s.k}>

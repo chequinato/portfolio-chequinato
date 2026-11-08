@@ -21,6 +21,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/miguel-chequinato-7018903a0/",
   credly: "https://www.credly.com/users/miguel-chequinato",
   cv: "/curriculo-miguel.pdf",
+  cvEn: "/resume-miguel-chequinato.pdf",
 };
 
 export const links = {
