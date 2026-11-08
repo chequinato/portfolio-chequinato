@@ -4560,7 +4560,7 @@ a.card:hover {
   height: 178px;
   border-radius: 14px;
   overflow: hidden;
-  background: #cfc4ff;
+  background: #ece7ff;
 }
 
 .badge__photo img {
@@ -4568,8 +4568,11 @@ a.card:hover {
   height: 100%;
   object-fit: cover;
   object-position: 55% 28%;
-  filter: grayscale(1) contrast(1.15) brightness(1.08);
+  filter: grayscale(1) contrast(1.02) brightness(1.1);
   mix-blend-mode: multiply;
+  /* zoom leve no rosto */
+  transform: scale(1.18);
+  transform-origin: 58% 22%;
   transition:
     filter 0.6s,
     transform 0.8s var(--ease);
@@ -4577,9 +4580,9 @@ a.card:hover {
 }
 
 .badge:hover .badge__photo img {
-  filter: none;
+  filter: brightness(1.04);
   mix-blend-mode: normal;
-  transform: scale(1.04);
+  transform: scale(1.24);
 }
 
 .badge__name {

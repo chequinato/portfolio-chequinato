@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
-import photo from "@/assets/profile-photo.png";
+import photo from "@/assets/profile-badge.jpg";
 import { posts, postUrl, linkedinStats, type Post } from "@/data/linkedin";
 import { profile, links } from "@/data/profile";
 import type { Instrument } from "@/data/projects";

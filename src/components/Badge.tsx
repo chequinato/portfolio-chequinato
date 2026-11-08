@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import photo from "@/assets/profile-photo.png";
+// Versão da foto com as sombras clareadas (a original é de pôr do sol).
+import photo from "@/assets/profile-badge.jpg";
 import { profile } from "@/data/profile";
 
 // Crachá pendurado num cordão, com física de pêndulo: balança sozinho,
