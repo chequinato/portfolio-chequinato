@@ -1,5 +1,6 @@
 import { timeline } from "@/data/career";
 import { useReveal } from "@/lib/hooks";
+import { RevealTitle } from "./RevealTitle";
 
 // Só o essencial de cada marco: quando, o quê e onde.
 export function Experience() {
@@ -11,9 +12,7 @@ export function Experience() {
       <div className="exp">
         <div>
           <span className="eyebrow fade">experiência</span>
-          <h2 className="sec-title fade" style={{ ["--d" as string]: 1 }}>
-            O caminho <span className="accent">até aqui.</span>
-          </h2>
+          <RevealTitle text="O caminho" accent="até aqui." />
         </div>
 
         <ol className="exp__list">

@@ -1,0 +1,434 @@
+/* =========================================================================
+   Capas animadas dos projetos (ProjectMock.tsx).
+   Tudo é medido em `em`, e o tamanho da fonte acompanha a largura da capa
+   (container query) — assim a mesma mini-interface serve no card e no pop-up.
+   ========================================================================= */
+.mock {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  container-type: inline-size;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(108, 76, 241, 0.25), transparent 50%),
+    linear-gradient(140deg, #ece7ff, #d9d0ff);
+}
+
+.slide__media .mock {
+  position: absolute;
+}
+
+.win {
+  width: 82%;
+  font-size: clamp(8px, 3.4cqw, 16px);
+  border-radius: 1em;
+  background: #fff;
+  box-shadow:
+    0 0.1em 0.3em rgba(29, 27, 52, 0.06),
+    0 1.6em 3em -1em rgba(60, 40, 160, 0.35);
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.win__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.8em 1em;
+  border-bottom: 1px solid var(--line);
+}
+
+.win__bar span {
+  width: 0.6em;
+  height: 0.6em;
+}
+
+.win__bar em {
+  font-size: 0.8em;
+  margin-left: 0.6em;
+}
+
+.win__body {
+  padding: 1em 1.1em 1.2em;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  font-size: 0.72em;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag--ok {
+  background: #e3f8ec;
+  color: #15803d;
+}
+
+.tag--warn {
+  background: #fff3dc;
+  color: #b45309;
+}
+
+.tag--block {
+  background: #fde6e6;
+  color: #b91c1c;
+}
+
+/* ---- Vero: transações rolando ---- */
+.vero {
+  height: 10.4em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 15%, #000 85%, transparent);
+  mask-image: linear-gradient(transparent, #000 15%, #000 85%, transparent);
+}
+
+.vero__list {
+  animation: vero-scroll 12s linear infinite;
+}
+
+.vero__list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas:
+    "id v tag"
+    "kind v tag";
+  column-gap: 0.9em;
+  align-items: center;
+  height: 2.6em;
+  border-bottom: 1px solid var(--line);
+}
+
+.vero__id {
+  grid-area: id;
+  font-size: 0.78em;
+  font-weight: 600;
+  font-family: ui-monospace, Menlo, monospace;
+}
+
+.vero__kind {
+  grid-area: kind;
+  font-size: 0.68em;
+  color: var(--muted);
+}
+
+.vero__v {
+  grid-area: v;
+  font-size: 0.82em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.vero__list .tag {
+  grid-area: tag;
+  min-width: 6.4em;
+}
+
+@keyframes vero-scroll {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* ---- FX: gráfico desenhando + cotações piscando ---- */
+.fx__spark {
+  display: block;
+  width: 100%;
+  height: 4em;
+  margin-bottom: 0.6em;
+}
+
+.fx__spark path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: draw 4s var(--ease) infinite;
+}
+
+@keyframes draw {
+  60%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.fx__rows li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1em;
+  align-items: center;
+  padding: 0.45em 0;
+  font-size: 0.82em;
+  border-top: 1px solid var(--line);
+}
+
+.fx__rows span {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.fx__rows strong {
+  font-variant-numeric: tabular-nums;
+  animation: tick 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.6s);
+}
+
+.fx__rows em {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.fx__rows .up {
+  color: #15803d;
+}
+
+.fx__rows .down {
+  color: #b91c1c;
+}
+
+@keyframes tick {
+  0%,
+  80%,
+  100% {
+    color: var(--ink);
+  }
+  88% {
+    color: var(--accent);
+  }
+}
+
+/* ---- Energy: barras crescendo ---- */
+.energy__kpi {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin-bottom: 0.8em;
+}
+
+.energy__kpi strong {
+  font-family: var(--font-head);
+  font-size: 1.6em;
+}
+
+.energy__kpi span {
+  font-size: 0.75em;
+  color: var(--muted);
+}
+
+.energy__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.55em;
+  height: 6.5em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid var(--line);
+}
+
+.energy__bars span {
+  flex: 1;
+  height: var(--h);
+  border-radius: 0.35em 0.35em 0.15em 0.15em;
+  background: linear-gradient(to top, var(--accent), #a690ff);
+  transform-origin: bottom;
+  animation: grow 3.2s var(--ease) infinite alternate;
+  animation-delay: calc(var(--i) * 0.12s);
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0.25);
+  }
+}
+
+/* ---- InternHub: anel de horas enchendo ---- */
+.ponto {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+}
+
+.ponto__ring {
+  width: 6.5em;
+  height: 6.5em;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.ponto__ring circle {
+  fill: none;
+  stroke: var(--accent-soft);
+  stroke-width: 10;
+}
+
+.ponto__ring .ponto__fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 264;
+  stroke-dashoffset: 264;
+  animation: fill-ring 4s var(--ease) infinite;
+}
+
+@keyframes fill-ring {
+  70%,
+  100% {
+    stroke-dashoffset: 50;
+  }
+}
+
+.ponto__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.ponto__info span {
+  font-size: 0.75em;
+  color: var(--muted);
+}
+
+.ponto__info strong {
+  font-family: var(--font-head);
+  font-size: 1.7em;
+  color: var(--accent);
+}
+
+.ponto__btn {
+  align-self: flex-start;
+  margin-top: 0.4em;
+  padding: 0.5em 1em;
+  border-radius: 0.6em;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75em;
+  font-weight: 600;
+  cursor: default;
+  animation: press 4s ease-in-out infinite;
+}
+
+@keyframes press {
+  0%,
+  60%,
+  100% {
+    transform: none;
+    box-shadow: 0 0 0 0 rgba(108, 76, 241, 0.4);
+  }
+  66% {
+    transform: scale(0.94);
+  }
+  75% {
+    box-shadow: 0 0 0 0.6em rgba(108, 76, 241, 0);
+  }
+}
+
+/* ---- Backoffice: pagamento mudando de status ---- */
+.bo__order {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "ticker status"
+    "qty status";
+  align-items: center;
+  padding: 0.7em 0.9em;
+  border-radius: 0.7em;
+  background: var(--bg);
+}
+
+.bo__order--dim {
+  opacity: 0.55;
+}
+
+.bo__ticker {
+  grid-area: ticker;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.bo__qty {
+  grid-area: qty;
+  font-size: 0.72em;
+  color: var(--muted);
+}
+
+.bo__order > .tag,
+.bo__status {
+  grid-area: status;
+}
+
+.bo__status {
+  display: grid;
+}
+
+.bo__status .tag {
+  grid-area: 1 / 1;
+}
+
+.bo__status .tag--warn {
+  animation: swap-out 4s infinite;
+}
+
+.bo__status .tag--ok {
+  animation: swap-in 4s infinite;
+}
+
+@keyframes swap-out {
+  0%,
+  55% {
+    opacity: 1;
+    transform: none;
+  }
+  62%,
+  96% {
+    opacity: 0;
+    transform: translateY(-40%);
+  }
+}
+
+@keyframes swap-in {
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+  62%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bo__track {
+  height: 0.35em;
+  margin: 0.7em 0.4em;
+  border-radius: 1em;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.bo__track span {
+  display: block;
+  height: 100%;
+  border-radius: 1em;
+  background: var(--accent);
+  transform-origin: left;
+  animation: track 4s var(--ease) infinite;
+}
+
+@keyframes track {
+  0% {
+    transform: scaleX(0.05);
+  }
+  55%,
+  100% {
+    transform: scaleX(1);
+  }
+}

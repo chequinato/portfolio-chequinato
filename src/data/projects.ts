@@ -17,6 +17,8 @@ export type Featured = {
   stack: string[];
   domain: string[];
   instrument: Instrument;
+  // A história curta que aparece no pop-up: uma linha para cada.
+  story: { problema: string; solucao: string; resultado: string };
   // Evidências reais: prints publicados no LinkedIn durante o projeto.
   shots?: string[];
   post?: string;
@@ -57,6 +59,11 @@ export const featured: Featured[] = [
     stack: ["C#", ".NET", "PostgreSQL", "EF Core", "ML.NET", "SignalR", "React", "TypeScript", "AWS", "SQS", "SNS", "Lambda", "Terraform", "xUnit", "Event-driven", "Clean Architecture", "Git"],
     domain: ["Back-end", "Cloud", "Dados", "Tempo real"],
     instrument: "vero",
+    story: {
+      problema: "Decidir em milissegundos se uma transação é fraude.",
+      solucao: "Regras rápidas bloqueiam na hora; os casos duvidosos vão para uma fila e um worker com ML.",
+      resultado: "API em Clean Architecture com SQS, SNS e Lambda, toda provisionada em Terraform.",
+    },
     shots: shots("7502451150512857089", 1),
     post: "7517311414584291329",
   },
@@ -79,6 +86,11 @@ export const featured: Featured[] = [
     stack: ["Python", "AWS", "Lambda", "S3", "API Gateway", "CloudWatch", "Terraform", "pytest", "Event-driven", "Git"],
     domain: ["Cloud", "Serverless", "Dados"],
     instrument: "fx",
+    story: {
+      problema: "Acompanhar o câmbio todo dia sem deixar um servidor ligado.",
+      solucao: "Uma Lambda agendada busca cotações, calcula variações e dispara alertas.",
+      resultado: "Relatório diário no S3 e API de consulta separada, tudo em Terraform.",
+    },
     shots: shots("7488362700545273856", 3),
     post: "7488362700545273856",
   },
@@ -100,6 +112,11 @@ export const featured: Featured[] = [
     stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "Redis", "Streamlit", "Plotly", "Docker", "GitHub Actions", "OpenAI", "CI/CD", "Git"],
     domain: ["Back-end", "Dados", "DevOps"],
     instrument: "energy",
+    story: {
+      problema: "Planilhas de consumo de energia difíceis de analisar.",
+      solucao: "API em FastAPI valida e processa os uploads; dashboard em Streamlit mostra tudo.",
+      resultado: "Custos, gráficos, relatório em PDF e insights com IA, com CI no GitHub Actions.",
+    },
     shots: shots("7453059099082153984", 5),
     post: "7453059099082153984",
   },
@@ -121,6 +138,11 @@ export const featured: Featured[] = [
     stack: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "React", "TypeScript", "Git"],
     domain: ["Back-end", "Full stack", "Regras de negócio"],
     instrument: "ponto",
+    story: {
+      problema: "Controlar o banco de horas do estágio seguindo a Lei do Estágio.",
+      solucao: "Ponto digital que aplica as regras sozinho: meia jornada em dia de prova e recesso proporcional.",
+      resultado: "Saldo de horas automático, ajustes aprovados pelo gestor e comprovante em PDF.",
+    },
   },
   {
     id: "backoffice",
@@ -140,6 +162,11 @@ export const featured: Featured[] = [
     stack: ["TypeScript", "Node.js", "Express", "Prisma", "SQLite", "React", "JWT", "Clean Architecture", "Git"],
     domain: ["Back-end", "Full stack", "Finanças"],
     instrument: "backoffice",
+    story: {
+      problema: "Registrar compras de ações e processar o pagamento de cada uma.",
+      solucao: "API em camadas com ciclo de status PENDENTE → EXECUTADO / CANCELADO e front em React.",
+      resultado: "Foi o case técnico que me aprovou no processo seletivo do estágio.",
+    },
     shots: shots("7445593635452170240", 6),
     post: "7445593635452170240",
   },
