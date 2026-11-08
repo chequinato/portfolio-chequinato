@@ -2,6 +2,12 @@
 
 Portfólio pessoal: [devchequinato.vercel.app](https://devchequinato.vercel.app)
 
+O portfólio é uma execução de workflow (`portfolio.yml`): cada seção é um job
+(`checkout` → `setup` → `build` → `install-deps` → `carreira` → `upload-artifacts` → `deploy`).
+Descendo a página, cada job passa de na fila → rodando → concluído, com o tempo real
+que o visitante ficou nele. O `deploy` (contato) é um environment protegido: só
+conclui quando o visitante aprova. O estado da run mora em `src/lib/pipeline.tsx`.
+
 Visual clean com cara de ferramenta de dev:
 
 - **Sobre** em bento grid, com um terminal no estilo do macOS que se apresenta sozinho

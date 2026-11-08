@@ -1,15 +1,21 @@
 import { badges } from "@/data/career";
+import { useReveal } from "@/lib/hooks";
+import { JobHead } from "./JobHead";
 
-// Faixa infinita com os certificados: sem texto, só as imagens.
-// Passar o mouse pausa; clicar abre a verificação.
+// Os certificados são os "artifacts" da run: uma faixa infinita só com as
+// imagens. Passar o mouse pausa; clicar abre a verificação.
 export function Certificates() {
+  const { ref, cls } = useReveal<HTMLElement>(0.2);
   const row = [...badges, ...badges];
   return (
-    <section id="certificados" className="certs" aria-label="Certificados">
+    <section id="certificados" ref={ref} className={`certs ${cls}`} aria-label="Certificados">
       <div className="container certs__head">
-        <span className="eyebrow">certificações</span>
+        <JobHead id="certificados" label="certificações" />
+        <p className="certs__cmd fade" style={{ ["--d" as string]: 1 }}>
+          <code>actions/upload-artifact@v4</code> · {badges.length} artifacts enviados
+        </p>
       </div>
-      <div className="marquee">
+      <div className="marquee fade" style={{ ["--d" as string]: 2 }}>
         <ul className="marquee__track">
           {row.map((b, i) => (
             <li key={`${b.title}-${i}`} aria-hidden={i >= badges.length}>

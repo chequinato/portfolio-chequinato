@@ -7,6 +7,7 @@ import { useReveal } from "@/lib/hooks";
 import { ProjectMock } from "./ProjectMock";
 import { RevealTitle } from "./RevealTitle";
 import { StatusIcon } from "./StatusIcon";
+import { JobHead } from "./JobHead";
 
 const pad = (n: number) => String(n + 1).padStart(2, "0");
 
@@ -44,6 +45,34 @@ function Card({ p, i, onOpen }: { p: Featured; i: number; onOpen: () => void }) 
    Um projeto dentro do pop-up. A chave (p.id) remonta o componente a cada
    troca, e isso dispara a animação de entrada na direção certa.
    ------------------------------------------------------------------------- */
+// Mini-pipeline do projeto: os passos rodam em sequência quando o slide
+// aparece. Projeto em andamento para no deploy, ainda rodando.
+const steps = ["checkout", "build", "test", "deploy"];
+
+function MiniRun({ wip }: { wip?: boolean }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setPhase((n) => (n >= steps.length ? n : n + 1)), 420);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <ol className="minirun" aria-label="Pipeline do projeto">
+      {steps.map((st, i) => {
+        const last = i === steps.length - 1;
+        const s = i < phase && !(wip && last) ? "success" : i <= phase ? "running" : "queued";
+        return (
+          <li key={st} className={`minirun__step minirun__step--${s}`}>
+            <span className="minirun__icon" key={s}>
+              <StatusIcon s={s} size={13} />
+            </span>
+            <code>{st}</code>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function Slide({ p, dir }: { p: Featured; dir: 1 | -1 }) {
   const shots = p.shots ?? [];
   // -1 = demonstração animada; 0..n = prints reais do projeto.
@@ -83,6 +112,7 @@ function Slide({ p, dir }: { p: Featured; dir: 1 | -1 }) {
           )}
         </span>
         <h3 className="slide__title">{p.title}</h3>
+        <MiniRun wip={p.wip} />
 
         <dl className="story">
           <div>
@@ -238,7 +268,7 @@ export function Projects() {
     <section id="projetos" ref={ref} className={`section projects ${cls}`}>
       <div className="container projects__head">
         <div>
-          <span className="eyebrow fade">projetos</span>
+          <JobHead id="projetos" label="projetos" />
           <RevealTitle text="O que eu" accent="construí." />
         </div>
         <div className="projects__arrows fade" style={{ ["--d" as string]: 2 }}>

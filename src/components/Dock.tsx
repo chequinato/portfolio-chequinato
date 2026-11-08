@@ -2,6 +2,7 @@ import { useRef, useState, type MouseEvent } from "react";
 import { TechIcon, brandHex } from "@/lib/icons";
 import { useReveal } from "@/lib/hooks";
 import { RevealTitle } from "./RevealTitle";
+import { JobHead } from "./JobHead";
 
 // Tudo o que já apareceu em algum projeto, agrupado como apps no Dock do
 // macOS. Os separadores dividem as categorias.
@@ -56,7 +57,7 @@ export function Dock() {
   return (
     <section id="stack" ref={ref} className={`section stack-sec ${cls}`}>
       <div className="container sec-top sec-top--center">
-        <span className="eyebrow fade">stack</span>
+        <JobHead id="stack" label="stack" />
         <RevealTitle text="Ferramentas que" accent="já usei." />
         <p className="sec-sub fade" style={{ ["--d" as string]: 3 }}>
           {total} tecnologias que aparecem nos meus projetos. <span className="sec-sub__hint">Passa o mouse 👀</span>

@@ -4,6 +4,7 @@ import { profile } from "@/data/profile";
 import { useReveal } from "@/lib/hooks";
 import { RevealTitle } from "./RevealTitle";
 import { StatusIcon, type Status } from "./StatusIcon";
+import { JobHead } from "./JobHead";
 
 // A trajetória como uma execução do GitHub Actions: cada marco é um job,
 // as colunas rodam em sequência quando a seção aparece e os jobs atuais
@@ -79,7 +80,7 @@ export function Experience() {
   return (
     <section id="experiencia" ref={ref} className={`section container ${cls}`}>
       <div className="sec-top">
-        <span className="eyebrow fade">experiência</span>
+        <JobHead id="experiencia" label="experiência" />
         <RevealTitle text="O caminho" accent="até aqui." />
       </div>
 

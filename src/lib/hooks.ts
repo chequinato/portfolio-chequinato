@@ -68,3 +68,16 @@ export function spotlight(e: ReactMouseEvent<HTMLElement>) {
     el.style.setProperty("--my", `${e.clientY - r.top}px`);
   });
 }
+
+// Botão "magnético": puxa levemente na direção do cursor.
+export function magnet(e: ReactMouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const x = (e.clientX - (r.left + r.width / 2)) * 0.25;
+  const y = (e.clientY - (r.top + r.height / 2)) * 0.35;
+  el.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+export function unmagnet(e: ReactMouseEvent<HTMLElement>) {
+  e.currentTarget.style.transform = "";
+}

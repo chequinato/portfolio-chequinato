@@ -6,6 +6,7 @@ import NotePage from "./pages/NotePage";
 import NotFound from "./pages/NotFound";
 import { Nav } from "./components/Nav";
 import { Footer } from "./components/Contact";
+import { PipelineProvider } from "./lib/pipeline";
 
 function ScrollReset() {
   const { pathname, hash } = useLocation();
@@ -22,6 +23,7 @@ function ScrollReset() {
 export default function App() {
   return (
     <BrowserRouter>
+      <PipelineProvider>
       <ScrollReset />
       <Nav />
       <main>
@@ -33,6 +35,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      </PipelineProvider>
     </BrowserRouter>
   );
 }

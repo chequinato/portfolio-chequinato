@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import photo from "@/assets/profile-photo.png";
 import { profile, links } from "@/data/profile";
 import { TechIcon } from "@/lib/icons";
-import { useReveal } from "@/lib/hooks";
+import { useReveal, magnet, unmagnet } from "@/lib/hooks";
+import { JobHead } from "./JobHead";
 
 // Ícones que orbitam a foto — a stack aparece sem precisar de texto.
 const orbit = ["AWS", "Python", "Terraform", "PostgreSQL", "Docker", "TypeScript"];
@@ -28,6 +29,23 @@ function RotatingWord() {
 export function Hero() {
   const { ref, cls } = useReveal<HTMLElement>(0.05);
   const visual = useRef<HTMLDivElement>(null);
+
+  // Parallax: ao rolar, foto, texto e manchas andam em velocidades diferentes.
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const y = Math.min(window.scrollY, window.innerHeight);
+        ref.current?.style.setProperty("--py", String(y));
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [ref]);
 
   // A luz de fundo segue o mouse e a foto inclina levemente na direção dele.
   const onMove = (e: MouseEvent<HTMLElement>) => {
@@ -62,7 +80,7 @@ export function Hero() {
 
       <div className="hero__inner container">
         <div className="hero__text">
-          <span className="eyebrow fade">olá, eu sou</span>
+          <JobHead id="inicio" label="olá, eu sou" />
           <h1 className="hero__title">
             <span className="line">
               <span className="line__in">Miguel</span>
@@ -78,7 +96,7 @@ export function Hero() {
           </p>
 
           <div className="hero__cta fade" style={{ ["--d" as string]: 4 }}>
-            <a href="#projetos" className="btn btn--primary">
+            <a href="#projetos" className="btn btn--primary" onMouseMove={magnet} onMouseLeave={unmagnet}>
               Ver projetos
             </a>
             <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn btn--ghost">

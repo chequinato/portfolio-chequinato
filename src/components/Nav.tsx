@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { usePipeline, type JobId } from "@/lib/pipeline";
+import { StatusIcon } from "./StatusIcon";
 
-const items = [
+const items: { id: JobId; label: string }[] = [
   { id: "sobre", label: "Sobre" },
   { id: "projetos", label: "Projetos" },
   { id: "stack", label: "Stack" },
@@ -16,6 +18,8 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
   const [progress, setProgress] = useState(0);
+  const run = usePipeline();
+  const home = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => {
@@ -60,6 +64,7 @@ export function Nav() {
         <nav className="nav__links" aria-label="Seções">
           {items.map((i) => (
             <a key={i.id} href={to(i.id)} className={active === i.id ? "is-active" : ""} onClick={() => setOpen(false)}>
+              {home && <StatusIcon s={run.status(i.id)} size={11} />}
               {i.label}
             </a>
           ))}

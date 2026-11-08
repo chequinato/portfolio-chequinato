@@ -5,6 +5,7 @@ import { badges } from "@/data/career";
 import { TechIcon } from "@/lib/icons";
 import { useReveal, useCountUp, useNow, spotlight } from "@/lib/hooks";
 import { RevealTitle } from "./RevealTitle";
+import { JobHead } from "./JobHead";
 
 /* -------------------------------------------------------------------------
    Terminal que se apresenta sozinho, digitando comando por comando.
@@ -174,7 +175,7 @@ export function About() {
   return (
     <section id="sobre" ref={ref} className={`section container ${cls}`}>
       <div className="sec-top">
-        <span className="eyebrow fade">sobre mim</span>
+        <JobHead id="sobre" label="sobre mim" />
         <RevealTitle text="Um pouco" accent="sobre mim." />
       </div>
 
