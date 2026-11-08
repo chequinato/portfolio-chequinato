@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 const items = [
   { id: "sobre", label: "Sobre" },
   { id: "projetos", label: "Projetos" },
+  { id: "stack", label: "Stack" },
   { id: "experiencia", label: "Experiência" },
 ];
 

@@ -108,7 +108,7 @@
   grid-area: id;
   font-size: 0.78em;
   font-weight: 600;
-  font-family: ui-monospace, Menlo, monospace;
+  font-family: var(--mono);
 }
 
 .vero__kind {
@@ -430,5 +430,144 @@
   55%,
   100% {
     transform: scaleX(1);
+  }
+}
+
+/* ---- Reembolso: pedido passando pelos status + webhooks ---- */
+.rb__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.9em;
+}
+
+.rb__id {
+  font-size: 0.78em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.rb__head strong {
+  font-family: var(--font-head);
+  font-size: 1.15em;
+}
+
+.rb__steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 0.9em;
+}
+
+.rb__steps::before,
+.rb__steps::after {
+  content: "";
+  position: absolute;
+  top: 0.45em;
+  left: 12.5%;
+  right: 12.5%;
+  height: 0.18em;
+  border-radius: 1em;
+  background: var(--line);
+}
+
+.rb__steps::after {
+  background: var(--accent);
+  transform-origin: left;
+  animation: rb-line 6s var(--ease) infinite;
+}
+
+@keyframes rb-line {
+  0% {
+    transform: scaleX(0);
+  }
+  75%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.rb__steps li {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.rb__dot {
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 50%;
+  background: #fff;
+  border: 0.18em solid var(--line);
+  animation: rb-dot 6s infinite;
+  animation-delay: calc(var(--i) * 1.5s - 0.2s);
+}
+
+@keyframes rb-dot {
+  0%,
+  100% {
+    border-color: var(--line);
+    background: #fff;
+  }
+  4%,
+  80% {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 0.3em rgba(108, 76, 241, 0.18);
+  }
+}
+
+.rb__steps li:first-child .rb__dot {
+  animation-delay: 0s;
+}
+
+.rb__steps em {
+  font-style: normal;
+  font-size: 0.68em;
+  color: var(--muted);
+}
+
+.rb__log li {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+  padding: 0.35em 0.6em;
+  margin-top: 0.3em;
+  border-radius: 0.5em;
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.66em;
+  opacity: 0;
+  animation: rb-log 6s infinite;
+  animation-delay: calc(var(--i) * 1.5s + 1.2s);
+}
+
+.rb__log b {
+  color: var(--accent);
+}
+
+.rb__log i {
+  margin-left: auto;
+  font-style: normal;
+  color: #15803d;
+  font-weight: 700;
+}
+
+@keyframes rb-log {
+  0% {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+  6%,
+  60% {
+    opacity: 1;
+    transform: none;
+  }
+  70%,
+  100% {
+    opacity: 0;
   }
 }

@@ -2,10 +2,13 @@
 
 Portfólio pessoal: [devchequinato.vercel.app](https://devchequinato.vercel.app)
 
-Visual clean e animado: fundo claro, uma única cor de destaque (violeta),
-Montserrat nos títulos e Inter no texto. A home tem só o essencial: início,
-sobre, projetos (carrossel + pop-up que passa de projeto em projeto),
-experiência, certificados (faixa infinita) e contato. As notas ficam em `/notas`.
+Visual clean com cara de ferramenta de dev:
+
+- **Sobre** em bento grid, com um terminal no estilo do macOS que se apresenta sozinho
+- **Projetos** com capas animadas (mini-interfaces em CSS) e pop-up Problema → Solução → Resultado
+- **Stack** num Dock do macOS com todas as tecnologias, ampliando no hover
+- **Experiência** como uma execução do GitHub Actions (`carreira.yml`), com jobs, grafo e log
+- Fontes da Apple (SF Pro / SF Mono) no Mac e iPhone, com Inter e JetBrains Mono como plano B
 
 ## Stack
 
@@ -26,11 +29,13 @@ npm run build      # checa os tipos e gera dist/
 |---|---|
 | Dados pessoais, contato, stack atual | `src/data/profile.ts` |
 | Projetos (destaques e arquivo) | `src/data/projects.ts` |
-| Trajetória (git log), certificados | `src/data/career.ts` |
+| Trajetória (jobs do workflow), certificados | `src/data/career.ts` |
 | Links de publicações do LinkedIn | `src/data/linkedin.ts` + `public/linkedin/` |
 | Ordem das seções da home | `src/pages/Home.tsx` |
 | Cores, fontes, layout e animações | `src/styles/main.css` (tokens no topo) |
 | Estilo das páginas de notas | `src/styles/pages.css` |
+| Capas animadas dos projetos | `src/components/ProjectMock.tsx` + `src/styles/mocks.css` |
+| Tecnologias do Dock | `src/components/Dock.tsx` |
 
 ## Publicar uma nota
 

@@ -17,6 +17,17 @@ const script = [
   { cmd: "echo $FOCO", out: "back-end, cloud e infraestrutura como código" },
 ];
 
+// "Last login" no formato do Terminal do macOS, com a data de hoje.
+const lastLogin = new Date().toLocaleString("en-US", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+}).replace(/,/g, "");
+
 function Terminal({ run }: { run: boolean }) {
   const [line, setLine] = useState(0);
   const [chars, setChars] = useState(0);
@@ -34,33 +45,40 @@ function Terminal({ run }: { run: boolean }) {
     return () => clearTimeout(t);
   }, [run, line, chars]);
 
+  const prompt = (
+    <span className="term__prompt">
+      miguel@macbook <i>~</i> %
+    </span>
+  );
+
   return (
     <div className="term">
       <div className="term__bar">
         <span />
         <span />
         <span />
-        <em>~/miguel</em>
+        <em>miguel — -zsh — 80×24</em>
       </div>
       <div className="term__body">
+        <p className="term__login">Last login: {lastLogin} on ttys000</p>
         {script.map((s, i) =>
           i < line ? (
             <div key={i}>
               <p>
-                <b>$</b> {s.cmd}
+                {prompt} {s.cmd}
               </p>
               <p className="term__out">{s.out}</p>
             </div>
           ) : i === line ? (
             <p key={i}>
-              <b>$</b> {s.cmd.slice(0, chars)}
+              {prompt} {s.cmd.slice(0, chars)}
               <span className="term__caret" />
             </p>
           ) : null,
         )}
         {line >= script.length && (
           <p>
-            <b>$</b> <span className="term__caret" />
+            {prompt} <span className="term__caret" />
           </p>
         )}
       </div>
@@ -193,9 +211,14 @@ export function About() {
           </ul>
         </div>
 
-        <div className="tile tile--stack spot pop" style={{ ["--d" as string]: 5 }}>
-          <span className="tile__label">stack</span>
-          <p className="tile__title">As ferramentas do meu dia a dia.</p>
+        <a href="#stack" className="tile tile--stack spot pop" style={{ ["--d" as string]: 5 }}>
+          <div className="tile__head">
+            <span className="tile__label">stack</span>
+            <span className="tile__arrow" aria-hidden>
+              ↓
+            </span>
+          </div>
+          <p className="tile__title">50+ tecnologias nos meus projetos.</p>
           <div className="mini-marquee">
             <ul>
               {[...stack, ...stack].map((t, i) => (
@@ -205,7 +228,7 @@ export function About() {
               ))}
             </ul>
           </div>
-        </div>
+        </a>
 
         <div className="pop tile-wrap--gh" style={{ ["--d" as string]: 6 }}>
           <GithubTile />

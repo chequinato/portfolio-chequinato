@@ -6,7 +6,9 @@ import {
   siSupabase, siVite, siFastify, siSqlalchemy, siAwslambda, siAmazons3, siAmazonapigateway,
   siAmazonsqs, siGooglegemini, siOpenai, siDjango, siJsonwebtokens, siTailwindcss, siHtml5,
   siPytest, siAmazoncloudwatch, siCisco, siGoogle, siUdemy, siCoursera, siCredly, siGithub,
-  siLinkedin, siWhatsapp, siVercel,
+  siLinkedin, siWhatsapp, siVercel, siSpringboot, siRabbitmq, siOpenapiinitiative, siClaude,
+  siJunit5, siInsomnia, siPostman, siAmazondynamodb, siLaravel, siLinux, siFlyway, siPydantic,
+  siAmazonec2, siAwssecretsmanager, siCss3, siApple,
 } from "simple-icons";
 
 type Glyph = { path: string; hex: string };
@@ -71,6 +73,22 @@ const map: Record<string, Glyph> = {
   LinkedIn: siLinkedin,
   WhatsApp: siWhatsapp,
   Vercel: siVercel,
+  "Spring Boot": siSpringboot,
+  RabbitMQ: siRabbitmq,
+  OpenAPI: siOpenapiinitiative,
+  Claude: siClaude,
+  JUnit: siJunit5,
+  Insomnia: siInsomnia,
+  Postman: siPostman,
+  DynamoDB: siAmazondynamodb,
+  Laravel: siLaravel,
+  Linux: siLinux,
+  Flyway: siFlyway,
+  Pydantic: siPydantic,
+  EC2: siAmazonec2,
+  "Secrets Manager": siAwssecretsmanager,
+  CSS: siCss3,
+  Apple: siApple,
 };
 
 const monogram: Record<string, string> = {
@@ -86,7 +104,7 @@ const monogram: Record<string, string> = {
   "Event-driven": "EDA",
   "Clean Architecture": "CA",
   "CI/CD": "CI",
-  DynamoDB: "DDB",
+  AsyncAPI: "API",
 };
 
 export function hasIcon(name: string) {

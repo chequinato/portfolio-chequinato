@@ -6,6 +6,7 @@ import { TechIcon } from "@/lib/icons";
 import { useReveal } from "@/lib/hooks";
 import { ProjectMock } from "./ProjectMock";
 import { RevealTitle } from "./RevealTitle";
+import { StatusIcon } from "./StatusIcon";
 
 const pad = (n: number) => String(n + 1).padStart(2, "0");
 
@@ -18,6 +19,10 @@ function Card({ p, i, onOpen }: { p: Featured; i: number; onOpen: () => void }) 
       <button className="pcard__btn" onClick={onOpen} aria-label={`Abrir detalhes de ${p.title}`}>
         <span className="pcard__media">
           <ProjectMock kind={p.instrument} />
+          <span className={`run-pill ${p.wip ? "run-pill--run" : ""}`}>
+            <StatusIcon s={p.wip ? "running" : "success"} size={14} />
+            {p.wip ? "em andamento" : "concluído"}
+          </span>
           <span className="pcard__hover">
             <span className="pcard__plus" aria-hidden>
               +
@@ -69,7 +74,14 @@ function Slide({ p, dir }: { p: Featured; dir: 1 | -1 }) {
       </div>
 
       <div className="slide__body">
-        <span className="slide__kicker">{p.kicker}</span>
+        <span className="slide__kicker">
+          {p.kicker}
+          {p.wip && (
+            <span className="run-pill run-pill--run run-pill--inline">
+              <StatusIcon s="running" size={13} /> em andamento
+            </span>
+          )}
+        </span>
         <h3 className="slide__title">{p.title}</h3>
 
         <dl className="story">

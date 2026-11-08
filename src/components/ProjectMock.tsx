@@ -136,7 +136,41 @@ function Backoffice() {
   );
 }
 
+function Reembolso() {
+  const steps = ["validação", "aprovação", "aprovado", "pago"];
+  return (
+    <Window title="POST /v1/reembolsos">
+      <div className="rb">
+        <div className="rb__head">
+          <span className="rb__id">#RB-4821 · Uber</span>
+          <strong>R$ 189,90</strong>
+        </div>
+        <ol className="rb__steps">
+          {steps.map((st, i) => (
+            <li key={st} style={{ ["--i" as string]: i }}>
+              <span className="rb__dot" />
+              <em>{st}</em>
+            </li>
+          ))}
+        </ol>
+        <ul className="rb__log">
+          <li style={{ ["--i" as string]: 0 }}>
+            <b>webhook</b> reembolso.validado <i>200</i>
+          </li>
+          <li style={{ ["--i" as string]: 1 }}>
+            <b>webhook</b> reembolso.aprovado <i>200</i>
+          </li>
+          <li style={{ ["--i" as string]: 2 }}>
+            <b>webhook</b> reembolso.pago <i>200</i>
+          </li>
+        </ul>
+      </div>
+    </Window>
+  );
+}
+
 const map: Record<Instrument, () => JSX.Element> = {
+  reembolso: Reembolso,
   vero: Vero,
   fx: Fx,
   energy: Energy,

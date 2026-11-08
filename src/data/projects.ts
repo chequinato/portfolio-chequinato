@@ -3,7 +3,7 @@
 //   "instrumento" — uma simulação viva do que o sistema faz por dentro.
 // - archive: o resto do acervo, em índice denso, com capturas de tela.
 
-export type Instrument = "vero" | "fx" | "energy" | "ponto" | "backoffice";
+export type Instrument = "reembolso" | "vero" | "fx" | "energy" | "ponto" | "backoffice";
 
 export type Featured = {
   id: string;
@@ -17,6 +17,8 @@ export type Featured = {
   stack: string[];
   domain: string[];
   instrument: Instrument;
+  // Projeto ainda em construção: aparece com o selo "em andamento".
+  wip?: boolean;
   // A história curta que aparece no pop-up: uma linha para cada.
   story: { problema: string; solucao: string; resultado: string };
   // Evidências reais: prints publicados no LinkedIn durante o projeto.
@@ -40,6 +42,30 @@ const gh = (r: string) => `https://github.com/chequinato/${r}`;
 const shots = (id: string, n: number) => Array.from({ length: n }, (_, i) => `/linkedin/${id}_${i}.jpg`);
 
 export const featured: Featured[] = [
+  {
+    id: "reembolso",
+    code: "RB-00",
+    title: "Reembolso",
+    kicker: "API B2B de reembolso corporativo",
+    year: 2026,
+    repo: gh("reembolso-contract"),
+    summary:
+      "API que empresas integram para ter o fluxo de reembolso completo: o funcionário envia a despesa com a nota, o sistema valida, o gestor aprova, o financeiro paga e a empresa é avisada por webhook a cada passo.",
+    points: [
+      "Contract-first: OpenAPI para o REST e AsyncAPI para os eventos, validados no CI",
+      "API (producer) e worker (consumer) conversando por RabbitMQ, com retry e DLQ",
+      "Multi-tenant com API Key, JWT, rate limit em Redis e idempotência",
+    ],
+    stack: ["Java", "Spring Boot", "PostgreSQL", "RabbitMQ", "Redis", "OpenAPI", "AsyncAPI", "Docker", "GitHub Actions", "JUnit", "Flyway"],
+    domain: ["Back-end", "Mensageria", "APIs"],
+    instrument: "reembolso",
+    wip: true,
+    story: {
+      problema: "Reembolso ainda roda em e-mail e planilha: nota perdida, nota usada duas vezes e zero auditoria.",
+      solucao: "API contract-first: um worker valida a nota via RabbitMQ, o gestor aprova e a empresa recebe webhooks assinados.",
+      resultado: "Contratos OpenAPI e AsyncAPI validados no GitHub Actions; API em Spring Boot em construção.",
+    },
+  },
   {
     id: "vero",
     code: "VR-01",

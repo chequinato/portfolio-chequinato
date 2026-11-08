@@ -222,7 +222,7 @@
 }
 
 .prose code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--mono);
   font-size: 0.86em;
   padding: 2px 7px;
   border-radius: 6px;
