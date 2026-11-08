@@ -1,87 +1,81 @@
-import { useState } from "react";
 import photo from "@/assets/profile-photo.png";
-import { StepHead } from "./StepHead";
-import { Halftone } from "./Halftone";
-import { Counter } from "./Counter";
-import { RunSummary } from "./RunSummary";
 import { profile, links } from "@/data/profile";
-import { featured, archive } from "@/data/projects";
-import { badges } from "@/data/career";
-import { useReveal, copy } from "@/lib/hooks";
-import snapshot from "@/data/github-snapshot.json";
+import { TechIcon } from "@/lib/icons";
+import { useReveal } from "@/lib/hooks";
 
-// Abertura em cartaz: "Miguel" em itálico serifado, o sobrenome gigante
-// ocupando a largura, e embaixo foto, a frase de apresentação e os números.
+// Ícones que orbitam a foto — a stack aparece sem precisar de texto.
+const orbit = ["AWS", "Python", "Terraform", "PostgreSQL", "Docker", "TypeScript"];
+
 export function Hero() {
-  const { ref, cls, inView } = useReveal<HTMLElement>(0.05);
-  const [copied, setCopied] = useState(false);
+  const { ref, cls } = useReveal<HTMLElement>(0.05);
 
-  const onCopy = async () => {
-    if (await copy(profile.email)) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    } else {
-      window.location.href = links.email;
-    }
-  };
-
-  const nums = [
-    { v: profile.age, l: "anos" },
-    { v: featured.length + archive.length, l: "projetos públicos" },
-    { v: snapshot.total, l: "contribuições no último ano" },
-    { v: badges.length, l: "certificados" },
+  const socials = [
+    { k: "GitHub", href: links.github },
+    { k: "LinkedIn", href: links.linkedin },
+    { k: "WhatsApp", href: links.whatsapp },
   ];
 
   return (
-    <section id="inicio" ref={ref} className={`sec hero ${cls}`}>
-      <StepHead id="inicio" right={`${profile.city} · 23°11′S 46°53′W`} />
+    <section id="inicio" ref={ref} className={`hero ${cls}`}>
+      <span className="blob blob--a" aria-hidden />
+      <span className="blob blob--b" aria-hidden />
 
-      <h1 className="hero__name" aria-label={profile.name}>
-        <span className="hero__first rv" style={{ ["--i" as string]: 0 }}>
-          Miguel
-        </span>
-        <span className="hero__last rv-cut" style={{ ["--i" as string]: 1 }}>
-          Chequinato<span className="hero__dot">.</span>
-        </span>
-      </h1>
-
-      <div className="hero__grid">
-        <div className="hero__fig rv-cut" style={{ ["--i" as string]: 2 }}>
-          <Halftone src={photo} focusX={0.56} focusY={0.38} />
-        </div>
-
-        <div className="hero__body">
-          <p className="hero__lede rv" style={{ ["--i" as string]: 3 }}>
-            Engenheiro de software, {profile.age} anos. Coloco sistemas <em>na nuvem</em> no{" "}
-            <span className="hero__itau">Itaú</span> — com AWS, Terraform, Python e SQL.
+      <div className="hero__inner container">
+        <div className="hero__text">
+          <span className="eyebrow fade">olá, eu sou</span>
+          <h1 className="hero__title">
+            <span className="line">
+              <span className="line__in">Miguel</span>
+            </span>
+            <span className="line">
+              <span className="line__in accent" style={{ ["--d" as string]: 1 }}>
+                Chequinato
+              </span>
+            </span>
+          </h1>
+          <p className="hero__role fade" style={{ ["--d" as string]: 3 }}>
+            Engenheiro de software · back-end &amp; cloud
           </p>
-          <div className="hero__cta rv" style={{ ["--i" as string]: 4 }}>
-            <a href="#projetos" className="btn btn--solid">
-              Ver projetos <span aria-hidden>↓</span>
+
+          <div className="hero__cta fade" style={{ ["--d" as string]: 4 }}>
+            <a href="#projetos" className="btn btn--primary">
+              Ver projetos
             </a>
-            <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn">
+            <a href={profile.cv} download="Curriculo-Miguel-Chequinato.pdf" className="btn btn--ghost">
               Currículo
             </a>
-            <button className={`btn btn--ghost ${copied ? "is-done" : ""}`} onClick={onCopy} title="Copiar e-mail">
-              <span className="mono">{copied ? "copiado ✓" : profile.email}</span>
-            </button>
           </div>
-          <p className="hero__status mono rv" style={{ ["--i" as string]: 5 }}>
-            <span className="led" /> aberto a conversar · {profile.school}, {profile.semester}
-          </p>
+
+          <ul className="socials fade" style={{ ["--d" as string]: 5 }}>
+            {socials.map((s) => (
+              <li key={s.k}>
+                <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.k} title={s.k}>
+                  <TechIcon name={s.k} size={17} title={false} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <ul className="hero__nums">
-          {nums.map((n, i) => (
-            <li key={n.l} className="rv" style={{ ["--i" as string]: 4 + i }}>
-              <Counter value={n.v} run={inView} className="num hero__num" delay={300 + i * 120} />
-              <span className="hero__numl">{n.l}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="hero__visual pop" style={{ ["--d" as string]: 2 }}>
+          <div className="ring-orbit" aria-hidden>
+            {orbit.map((t, i) => (
+              <span key={t} className="orbit-item" style={{ ["--a" as string]: `${(360 / orbit.length) * i}deg` }}>
+                <span className="orbit-item__bubble">
+                  <TechIcon name={t} size={20} title={false} />
+                </span>
+              </span>
+            ))}
+          </div>
+          <div className="hero__ring">
+            <img src={photo} alt={`Foto de ${profile.name}`} className="hero__photo" />
+          </div>
+        </div>
       </div>
 
-      <RunSummary />
+      <a href="#sobre" className="scroll-hint" aria-label="Rolar para baixo">
+        <span />
+      </a>
     </section>
   );
 }

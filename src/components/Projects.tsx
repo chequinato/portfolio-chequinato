@@ -1,107 +1,255 @@
-import { StepHead } from "./StepHead";
-import { useState } from "react";
-import { featured, type Instrument } from "@/data/projects";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { featured, type Featured } from "@/data/projects";
 import { postUrl } from "@/data/linkedin";
-import { Lightbox } from "./Archive";
-import { useReveal } from "@/lib/hooks";
 import { TechIcon } from "@/lib/icons";
-import { VeroFeed } from "./instruments/VeroFeed";
-import { FxPipeline } from "./instruments/FxPipeline";
-import { EnergyBars } from "./instruments/EnergyBars";
-import { PontoClock } from "./instruments/PontoClock";
-import { Backoffice } from "./instruments/Backoffice";
+import { useReveal } from "@/lib/hooks";
 
-const instruments: Record<Instrument, () => JSX.Element> = {
-  vero: VeroFeed,
-  fx: FxPipeline,
-  energy: EnergyBars,
-  ponto: PontoClock,
-  backoffice: Backoffice,
-};
+const pad = (n: number) => String(n + 1).padStart(2, "0");
 
-function Dossier({ p, i }: { p: (typeof featured)[number]; i: number }) {
-  const { ref, cls } = useReveal<HTMLElement>(0.12);
-  const Inst = instruments[p.instrument];
-  const [open, setOpen] = useState<number | null>(null);
+/* -------------------------------------------------------------------------
+   Card do carrossel: só imagem, número, título e uma linha.
+   ------------------------------------------------------------------------- */
+function Card({ p, i, onOpen }: { p: Featured; i: number; onOpen: () => void }) {
+  const cover = p.shots?.[0];
   return (
-    <article ref={ref} className={`dossier ${i % 2 ? "dossier--flip" : ""} ${cls}`} id={`p-${p.id}`}>
-      <div className="dossier__text">
-        <div className="dossier__meta">
-          <span className="idx">{p.code}</span>
-          <span className="mono-label">{p.year}</span>
-          <span className="mono-label">{p.domain.join(" · ")}</span>
-        </div>
-        <h3 className="dossier__title rv-cut">{p.title}</h3>
-        <p className="dossier__kicker rv" style={{ ["--i" as string]: 1 }}>{p.kicker}</p>
-        <p className="dossier__summary rv" style={{ ["--i" as string]: 2 }}>{p.summary}</p>
-        <ol className="dossier__points">
-          {p.points.map((pt, j) => (
-            <li key={pt} className="rv-wipe" style={{ ["--i" as string]: 3 + j }}>
-              <span className="mono">{String(j + 1).padStart(2, "0")}</span>
-              {pt}
-            </li>
+    <li className="pcard pop" style={{ ["--d" as string]: i + 1 }}>
+      <button className="pcard__btn" onClick={onOpen} aria-label={`Abrir detalhes de ${p.title}`}>
+        <span className="pcard__media">
+          {cover ? (
+            <img src={cover} alt="" loading="lazy" draggable={false} />
+          ) : (
+            <span className="pcard__placeholder">
+              <TechIcon name={p.stack[0]} size={48} title={false} />
+            </span>
+          )}
+          <span className="pcard__hover">
+            <span className="pcard__plus" aria-hidden>
+              +
+            </span>
+            ver projeto
+          </span>
+        </span>
+        <span className="pcard__body">
+          <span className="pcard__num">{pad(i)}</span>
+          <span className="pcard__title">{p.title}</span>
+          <span className="pcard__kicker">{p.kicker}</span>
+        </span>
+      </button>
+    </li>
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Um projeto dentro do pop-up. A chave (p.id) remonta o componente a cada
+   troca, e isso dispara a animação de entrada na direção certa.
+   ------------------------------------------------------------------------- */
+function Slide({ p, dir }: { p: Featured; dir: 1 | -1 }) {
+  const shots = p.shots ?? [];
+  const [shot, setShot] = useState(0);
+
+  return (
+    <div className={`slide ${dir === 1 ? "slide--next" : "slide--prev"}`}>
+      <div className="slide__media">
+        {shots.length ? (
+          <img key={shot} src={shots[shot]} alt={`Captura de tela do ${p.title}`} className="slide__img" />
+        ) : (
+          <span className="pcard__placeholder">
+            <TechIcon name={p.stack[0]} size={64} title={false} />
+          </span>
+        )}
+        {shots.length > 1 && (
+          <div className="slide__thumbs">
+            {shots.map((s, i) => (
+              <button
+                key={s}
+                className={i === shot ? "is-on" : ""}
+                onClick={() => setShot(i)}
+                aria-label={`Imagem ${i + 1} de ${shots.length}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="slide__body">
+        <span className="slide__kicker">{p.kicker}</span>
+        <h3 className="slide__title">{p.title}</h3>
+        <p className="slide__summary">{p.summary}</p>
+
+        <ul className="slide__points">
+          {p.points.slice(0, 3).map((pt) => (
+            <li key={pt}>{pt}</li>
           ))}
-        </ol>
-        <ul className="dossier__stack" aria-label="Tecnologias">
-          {p.stack.map((s, j) => (
-            <li key={s} className="chip rv" style={{ ["--i" as string]: 6 + j * 0.5 }}>
-              <TechIcon name={s} size={14} title={false} />
-              {s}
+        </ul>
+
+        <ul className="slide__stack">
+          {p.stack.slice(0, 8).map((t) => (
+            <li key={t} title={t}>
+              <TechIcon name={t} size={15} title={false} />
+              {t}
             </li>
           ))}
         </ul>
-        {p.shots && p.shots.length > 0 && (
-          <div className="evidence">
-            <span className="mono-label">evidências · prints publicados</span>
-            <div className="evidence__row">
-              {p.shots.map((src, j) => (
-                <button key={src} className="evidence__shot" onClick={() => setOpen(j)} aria-label={`Abrir print ${j + 1} de ${p.title}`}>
-                  <img src={src} alt="" loading="lazy" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        <div className="dossier__links">
-          <a className="link-arrow" href={p.repo} target="_blank" rel="noreferrer">
-            Ver repositório <span aria-hidden>↗</span>
+
+        <div className="slide__links">
+          <a href={p.repo} target="_blank" rel="noreferrer" className="btn btn--primary btn--sm">
+            Ver código
           </a>
           {p.post && (
-            <a className="link-arrow link-arrow--quiet" href={postUrl(p.post)} target="_blank" rel="noreferrer">
-              Publicação <span aria-hidden>↗</span>
+            <a href={postUrl(p.post)} target="_blank" rel="noreferrer" className="btn btn--ghost btn--sm">
+              Publicação
             </a>
           )}
         </div>
       </div>
-      {open !== null && p.shots && (
-        <Lightbox p={{ title: p.title, kind: p.kicker, summary: p.summary, images: p.shots }} start={open} onClose={() => setOpen(null)} />
-      )}
-      <div className="dossier__inst rv-cut" style={{ ["--i" as string]: 2 }}>
-        <Inst />
-      </div>
-    </article>
+    </div>
   );
 }
 
-export function Projects() {
-  const { ref, cls } = useReveal<HTMLDivElement>();
-  return (
-    <section id="projetos" className="sec projects">
-      <div ref={ref} className={cls}>
-        <StepHead id="projetos" right={`${featured.length} sistemas`} />
-        <div className="sec-title">
-          <h2 className="display rv-cut">
-            Sistemas que eu construí <em>e explico.</em>
-          </h2>
-          <p className="serif-note rv" style={{ ["--i" as string]: 1 }}>
-            Print parado não mostra o que um back-end faz. Cada projeto aqui tem um instrumento: uma simulação ao vivo
-            do que acontece por dentro — as decisões, as filas, os números.
-          </p>
+function Modal({ start, onClose }: { start: number; onClose: () => void }) {
+  const [state, setState] = useState({ i: start, dir: 1 as 1 | -1 });
+  const [closing, setClosing] = useState(false);
+  const touch = useRef<number | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const n = featured.length;
+
+  const go = useCallback((dir: 1 | -1) => setState((s) => ({ i: (s.i + dir + n) % n, dir })), [n]);
+  const close = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 260);
+  }, [onClose]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowLeft") go(-1);
+    };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    panel.current?.focus();
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [close, go]);
+
+  // Volta o scroll do painel para o topo a cada projeto (útil no celular).
+  useEffect(() => {
+    panel.current?.scrollTo({ top: 0 });
+  }, [state.i]);
+
+  const p = featured[state.i];
+
+  return createPortal(
+    <div className={`modal ${closing ? "is-closing" : ""}`} role="dialog" aria-modal="true" aria-label={p.title}>
+      <div className="modal__backdrop" onClick={close} />
+
+      <button className="modal__arrow modal__arrow--prev" onClick={() => go(-1)} aria-label="Projeto anterior">
+        ←
+      </button>
+
+      <div
+        ref={panel}
+        tabIndex={-1}
+        className="modal__panel"
+        onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          if (touch.current === null) return;
+          const dx = e.changedTouches[0].clientX - touch.current;
+          if (Math.abs(dx) > 60) go(dx < 0 ? 1 : -1);
+          touch.current = null;
+        }}
+      >
+        <div className="modal__top">
+          <span className="modal__count">
+            <strong>{pad(state.i)}</strong> / {pad(n - 1)}
+          </span>
+          <span className="modal__bar">
+            <span style={{ width: `${((state.i + 1) / n) * 100}%` }} />
+          </span>
+          <button className="modal__close" onClick={close} aria-label="Fechar">
+            ✕
+          </button>
+        </div>
+
+        <Slide key={p.id} p={p} dir={state.dir} />
+
+        <div className="modal__nav-mobile">
+          <button onClick={() => go(-1)} aria-label="Projeto anterior">
+            ← anterior
+          </button>
+          <button onClick={() => go(1)} aria-label="Próximo projeto">
+            próximo →
+          </button>
         </div>
       </div>
-      {featured.map((p, i) => (
-        <Dossier key={p.id} p={p} i={i} />
-      ))}
+
+      <button className="modal__arrow modal__arrow--next" onClick={() => go(1)} aria-label="Próximo projeto">
+        →
+      </button>
+    </div>,
+    document.body,
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Seção
+   ------------------------------------------------------------------------- */
+export function Projects() {
+  const { ref, cls } = useReveal<HTMLElement>(0.1);
+  const track = useRef<HTMLUListElement>(null);
+  const [open, setOpen] = useState<number | null>(null);
+  const [progress, setProgress] = useState(0);
+
+  const onScroll = () => {
+    const el = track.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setProgress(max > 0 ? el.scrollLeft / max : 0);
+  };
+
+  const slide = (dir: 1 | -1) => {
+    const el = track.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>(".pcard");
+    el.scrollBy({ left: dir * ((card?.offsetWidth ?? 360) + 24), behavior: "smooth" });
+  };
+
+  return (
+    <section id="projetos" ref={ref} className={`section projects ${cls}`}>
+      <div className="container projects__head">
+        <div>
+          <span className="eyebrow fade">projetos</span>
+          <h2 className="sec-title fade" style={{ ["--d" as string]: 1 }}>
+            O que eu <span className="accent">construí.</span>
+          </h2>
+        </div>
+        <div className="projects__arrows fade" style={{ ["--d" as string]: 2 }}>
+          <button onClick={() => slide(-1)} aria-label="Anterior" disabled={progress <= 0.01}>
+            ←
+          </button>
+          <button onClick={() => slide(1)} aria-label="Próximo" disabled={progress >= 0.99}>
+            →
+          </button>
+        </div>
+      </div>
+
+      <ul ref={track} className="track" onScroll={onScroll}>
+        {featured.map((p, i) => (
+          <Card key={p.id} p={p} i={i} onOpen={() => setOpen(i)} />
+        ))}
+      </ul>
+
+      <div className="container">
+        <div className="track__progress">
+          <span style={{ transform: `scaleX(${0.2 + progress * 0.8})` }} />
+        </div>
+      </div>
+
+      {open !== null && <Modal start={open} onClose={() => setOpen(null)} />}
     </section>
   );
 }

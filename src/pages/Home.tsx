@@ -1,31 +1,18 @@
 import { Hero } from "@/components/Hero";
-import { Ticker } from "@/components/Ticker";
-import { Now } from "@/components/Now";
+import { About } from "@/components/About";
 import { Projects } from "@/components/Projects";
-import { Archive } from "@/components/Archive";
-import { StackMatrix } from "@/components/StackMatrix";
-import { GithubBand } from "@/components/GithubBand";
-import { Timeline } from "@/components/Timeline";
-import { Publications } from "@/components/Publications";
-import { Credentials } from "@/components/Credentials";
-import { NotesPreview } from "@/components/NotesPreview";
+import { Experience } from "@/components/Experience";
+import { Certificates } from "@/components/Certificates";
 import { Contact } from "@/components/Contact";
 
-// Ordem dos jobs da run (ver data/sections.ts): cada seção é um job.
 export default function Home() {
   return (
     <>
       <Hero />
-      <Ticker />
-      <Now />
+      <About />
       <Projects />
-      <Archive />
-      <StackMatrix />
-      <GithubBand />
-      <Publications />
-      <Timeline />
-      <Credentials />
-      <NotesPreview />
+      <Experience />
+      <Certificates />
       <Contact />
     </>
   );

@@ -12,7 +12,7 @@ import {
 type Glyph = { path: string; hex: string };
 
 // Nome canônico da tecnologia → ícone. Quando o Simple Icons não tem a
-// marca (C#, SQL Server), o componente cai para um monograma em mono.
+// marca (C#, SQL Server), o componente cai para um monograma.
 const map: Record<string, Glyph> = {
   AWS: siAmazonwebservices,
   Terraform: siTerraform,
@@ -121,12 +121,12 @@ export function TechIcon({ name, size = 18, className, title = true }: Props) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 24 24" role="img" aria-label={name}>
       {title && <title>{name}</title>}
-      <rect x="1" y="1" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
       <text
         x="12"
         y="16"
         textAnchor="middle"
-        fontFamily="var(--mono)"
+        fontFamily="inherit"
         fontWeight="700"
         fontSize={m.length > 2 ? 7.5 : 10}
         fill="currentColor"
