@@ -2799,13 +2799,66 @@ a.card:hover {
   text-align: right;
 }
 
-/* Trilho lateral */
+/* Trilho lateral.
+   Abaixo de 1240px ele some. De 1240px em diante o site reserva uma faixa
+   igual dos dois lados (--rail-g) e todo o conteúdo — inclusive carrosséis
+   e faixas que vazam — fica entre elas, centralizado. Até 1480px o trilho
+   é só de nós; acima disso cada job vira um card do GitHub Actions. */
 .track-rail {
-  position: fixed;
-  top: 50%;
-  left: max(18px, calc((100vw - 1180px) / 4 - 7px));
-  z-index: 40;
-  transform: translateY(-50%);
+  display: none;
+}
+
+@media (min-width: 1240px) {
+  :root:has(.track-rail) {
+    --rail-g: max(64px, calc((100vw - 1180px) / 2));
+    --edge: calc(var(--rail-g) + 32px);
+  }
+
+  :root:has(.track-rail) .container {
+    max-width: min(1180px, calc(100vw - 2 * var(--rail-g)));
+  }
+
+  /* O que antes ia de borda a borda agora para na faixa do trilho. */
+  :root:has(.track-rail) .track {
+    margin-inline: var(--rail-g);
+    padding-inline: 32px;
+    scroll-padding-inline: 32px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  }
+
+  :root:has(.track-rail) .marquee,
+  :root:has(.track-rail) .kinetic-wrap {
+    margin-inline: var(--rail-g);
+  }
+
+  :root:has(.track-rail) .kinetic-wrap {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  :root:has(.track-rail) .dock-wrap {
+    padding-inline: calc(var(--rail-g) + 20px);
+  }
+
+  .track-rail {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: calc(var(--rail-g) / 2 - 7px);
+    z-index: 40;
+    transform: translateY(-50%);
+  }
+}
+
+.track-rail__head,
+.track-rail__name,
+.track-rail__dur {
+  display: none;
+}
+
+.track-rail__jobs {
+  position: relative;
 }
 
 .track-rail__line {
@@ -2880,22 +2933,183 @@ a.card:hover {
   opacity: 0.6;
 }
 
-.track-rail a:hover .track-rail__tip,
-.track-rail li.is-current .track-rail__tip {
+.track-rail a:hover .track-rail__tip {
   opacity: 1;
   transform: translate(0, -50%);
 }
 
-.track-rail li.is-current .track-rail__tip {
-  background: rgba(29, 27, 52, 0.75);
-}
+/* ---- Modo cards: o grafo de jobs do GitHub Actions ---- */
+@media (min-width: 1480px) and (min-height: 660px) {
+  :root:has(.track-rail) {
+    --rail-g: max(240px, calc((100vw - 1180px) / 2));
+  }
 
-.track-rail li.is-current a:not(:hover) .track-rail__tip {
-  opacity: 0;
-}
-
-@media (max-width: 1320px) {
   .track-rail {
+    left: calc(var(--rail-g) - 214px);
+    width: 190px;
+  }
+
+  .track-rail__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--ink);
+    color: #fff;
+    box-shadow: 0 14px 30px -18px rgba(29, 27, 52, 0.6);
+  }
+
+  .track-rail__head > span {
+    display: grid;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .track-rail__head b {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  .track-rail__head small {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track-rail__head .st--run .st__track {
+    stroke: rgba(255, 255, 255, 0.25);
+  }
+
+  /* A linha passa pelo centro dos ícones, por trás dos cards. */
+  .track-rail__line {
+    top: 20px;
+    bottom: 20px;
+    left: 17px;
+  }
+
+  .track-rail ol {
+    gap: 8px;
+  }
+
+  .track-rail a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+    height: auto;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--line), 0 6px 16px -12px rgba(29, 27, 52, 0.35);
+    transition:
+      transform 0.35s var(--ease),
+      box-shadow 0.25s,
+      opacity 0.25s;
+  }
+
+  .track-rail a:hover {
+    transform: translateX(4px);
+    box-shadow: 0 0 0 1px rgba(108, 76, 241, 0.35), 0 10px 22px -14px rgba(29, 27, 52, 0.4);
+  }
+
+  .track-rail li.is-current a {
+    transform: translateX(6px);
+    box-shadow:
+      0 0 0 1.5px var(--accent),
+      0 0 0 5px rgba(108, 76, 241, 0.12),
+      0 14px 28px -16px rgba(108, 76, 241, 0.6);
+  }
+
+  .track-rail li.is-queued a {
+    opacity: 0.6;
+  }
+
+  .track-rail li.is-queued a:hover {
+    opacity: 1;
+  }
+
+  .track-rail a > .st {
+    flex-shrink: 0;
+  }
+
+  .track-rail__name {
+    display: grid;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .track-rail__name code {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track-rail__name small {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .track-rail__dur {
+    display: block;
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-style: normal;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .track-rail li.is-current .track-rail__dur {
+    color: var(--accent);
+  }
+
+  .track-rail__tip {
+    display: none;
+  }
+}
+
+/* ---- Grade de engenharia por trás do resto da página ---- */
+.gridded {
+  position: relative;
+  isolation: isolate;
+}
+
+.gridded::before,
+.gridded::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.gridded::before {
+  background-image:
+    linear-gradient(rgba(29, 27, 52, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 27, 52, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+  -webkit-mask-image: linear-gradient(transparent, #000 260px, #000 calc(100% - 200px), transparent);
+  mask-image: linear-gradient(transparent, #000 260px, #000 calc(100% - 200px), transparent);
+}
+
+/* Luz que segue o cursor, igual à do hero. */
+.gridded::after {
+  background: radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(108, 76, 241, 0.08), transparent 70%);
+}
+
+@media (hover: none) {
+  .gridded::after {
     display: none;
   }
 }
